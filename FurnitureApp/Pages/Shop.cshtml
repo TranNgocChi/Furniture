@@ -1,0 +1,40 @@
+﻿@page
+@model FurnitureApp.Pages.ShopModel
+@{
+}
+
+<div class="untree_co-section product-section before-footer-section">
+	<div class="container">
+		<div class="row">
+			<!-- images/product-3.png -->
+			@if(Model.products != null)
+			{
+				foreach(var product in Model.products)
+				{
+					<div class="col-12 col-md-4 col-lg-3 mb-5">
+						<a class="product-item" href="#">
+							<img src="@product.ProductImage" class="img-fluid product-thumbnail">
+							<h3 class="product-title">@product.ProductName</h3>
+							<strong class="product-price">@product.ProductPrice VND</strong>
+
+							<span class="icon-cross">
+								<img src="images/cross.svg" class="img-fluid">
+							</span>
+						</a>
+					</div>
+				}
+				
+			}
+			else
+			{
+				<div class="col-12 col-md-4 col-lg-3 mb-5">
+					No Products
+				</div>
+			}
+
+			
+			
+
+		</div>
+	</div>
+</div>
