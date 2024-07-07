@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace DataAccess.DAO;
 
-namespace DataAccess.DAO
+internal class AddressDAO
 {
-	internal class AddressDAO
-	{
-	}
 }

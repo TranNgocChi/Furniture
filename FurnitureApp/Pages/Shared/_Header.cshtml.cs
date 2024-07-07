@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-namespace FurnitureApp.Pages.Shared
+namespace FurnitureApp.Pages.Shared;
+
+public class _HeaderModel : ViewComponent
 {
-    public class _HeaderModel : ViewComponent
-    {
-        public void OnGet()
-        {
-        }
-    }
+	public class HeaderModel
+	{
+		public string? UserName { get; set; }
+		public bool? IsUserLogined { get; set; }
+	}
 }
