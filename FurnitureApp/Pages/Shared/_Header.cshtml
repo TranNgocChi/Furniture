@@ -1,4 +1,6 @@
-﻿
+﻿@model _HeaderModel.HeaderModel
+
+
 <!-- Start Header/Navigation -->
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
@@ -22,14 +24,23 @@
 			</ul>
 
 			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-				<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
 				<li><a class="nav-link" href="cart.html"><img src="images/cart.svg"></a></li>
+				@if (String.IsNullOrEmpty(Model.UserName))
+				{
+					<li><a class="nav-link" href="Login"><img src="images/user.svg"></a></li>
+				}
+				else
+				{
+					<li><a class="nav-link" href="Login">@Model.UserName</a></li>
+				}
+
 			</ul>
 		</div>
 	</div>
 
 </nav>
 <!-- End Header/Navigation -->
+
 <!-- Start Hero Section -->
 <div class="hero">
 	<div class="container">

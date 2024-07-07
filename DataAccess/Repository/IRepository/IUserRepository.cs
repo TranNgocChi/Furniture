@@ -11,7 +11,8 @@ namespace DataAccess.Repository.IRepository
 	{
 		public List<User> GetAll();
 		public User? GetById(string id);
-		public void Create(User user);
+        public User? GetByEmail(string email);
+        public void Create(User user);
 		public void Update(User user);
 		public void Delete(User user);
 		public void DeleteAll();

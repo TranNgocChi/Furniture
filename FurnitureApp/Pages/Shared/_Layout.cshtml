@@ -1,4 +1,9 @@
-﻿
+﻿@{
+	var Header = ViewData["Header"] as _HeaderModel.HeaderModel;
+	var HeaderNull = new _HeaderModel.HeaderModel();
+}
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,8 +23,14 @@
 	<title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
 </head>
 <body>
-
-	<partial name="_Header"/>
+	@if (Header != null && !String.IsNullOrEmpty(Header.UserName))
+	{
+		<partial name="_Header" model="Header" />
+	}
+	else
+	{
+		<partial name="_Header" model="HeaderNull" />
+	}
 
 	@RenderBody()
 
