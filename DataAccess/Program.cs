@@ -1,13 +1,8 @@
-﻿using DataAccess.DAO;
-using FurnitureApp;
-using FurnitureApp.Models;
-using Microsoft.EntityFrameworkCore;
-
-class Program
+﻿class Program
 {
-	
-	static void Main(string[] args)
-	{
-        
-	}
+
+    static void Main(string[] args)
+    {
+
+    }
 }
