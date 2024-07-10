@@ -3,133 +3,206 @@
 @{
     ViewData["Title"] = "Cart";
     ViewData["CurrentTab"] = "cart";
+    var headerJson = JsonConvert.SerializeObject(ViewData["Header"] as _HeaderModel.HeaderModel);
+    var currentCartItemsJson = JsonConvert.SerializeObject(Model.CurrentCartItems);
+    var currentCartJson = JsonConvert.SerializeObject(Model.CurrentCart);
 }
+<script>
+    var products = [];
+</script>
+<h1>@ViewData["abc"]</h1>
 <div class="untree_co-section before-footer-section">
-            <div class="container">
-              <div class="row mb-5">
-                <form class="col-md-12" method="post">
-                  <div class="site-blocks-table">
+    <div class="container">
+        <form class="row mb-5" method="post">
+            <div class="col-md-12">
+                <div class="site-blocks-table">
                     <table class="table">
-                      <thead>
-                        <tr>
-                          <th class="product-thumbnail">Image</th>
-                          <th class="product-name">Product</th>
-                          <th class="product-price">Price</th>
-                          <th class="product-quantity">Quantity</th>
-                          <th class="product-total">Total</th>
-                          <th class="product-remove">Remove</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="images/product-1.png" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">Product 1</h2>
-                          </td>
-                          <td>$49.00</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
-        
-                          </td>
-                          <td>$49.00</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
-        
-                        <tr>
-                          <td class="product-thumbnail">
-                            <img src="images/product-2.png" alt="Image" class="img-fluid">
-                          </td>
-                          <td class="product-name">
-                            <h2 class="h5 text-black">Product 2</h2>
-                          </td>
-                          <td>$49.00</td>
-                          <td>
-                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
-                              <div class="input-group-prepend">
-                                <button class="btn btn-outline-black decrease" type="button">&minus;</button>
-                              </div>
-                              <input type="text" class="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
-                              <div class="input-group-append">
-                                <button class="btn btn-outline-black increase" type="button">&plus;</button>
-                              </div>
-                            </div>
-        
-                          </td>
-                          <td>$49.00</td>
-                          <td><a href="#" class="btn btn-black btn-sm">X</a></td>
-                        </tr>
-                      </tbody>
+                        <thead>
+                            <tr>
+                                <th class="product-thumbnail">Image</th>
+                                <th class="product-name">Product</th>
+                                <th class="product-price">Price</th>
+                                <th class="product-quantity">Quantity</th>
+                                <th class="product-total">Total</th>
+                                <th class="product-remove">Remove</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.CurrentCartItems is not null)
+                            {
+                                foreach (var cartItem in Model.CurrentCartItems)
+                                {
+                                    <tr class="cart-item-row">
+                                        <td class="product-thumbnail">
+                                            <a asp-page="/Shop/ProductDetail" asp-route-productId="@cartItem.Product.Id" asp-route-headerJson="@headerJson">
+                                                <img src="~/images/@cartItem.Product.ProductImage" alt="Image" class="img-fluid">
+                                            </a>
+                                        </td>
+                                        <td class="product-name">
+                                            <h2 class="h5 text-black">@cartItem.Product.ProductName</h2>
+                                        </td>
+                                        <td class="product-price">$@cartItem.Product.ProductPrice</td>
+                                        <td>
+                                            <div class="ms-5 input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-black decrease" type="button">&minus;</button>
+                                                </div>
+                                                <input type="text" class="form-control text-center quantity-amount" asp-for="@cartItem.Quantity" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-black increase" type="button">&plus;</button>
+                                                </div>
+                                            </div>
+
+                                        </td>
+                                        <td class="total-money">@(cartItem.Quantity * cartItem.Product.ProductPrice) </td>
+                                        <td><a class="btn btn-black btn-sm btn-remove">X</a></td>
+                                    </tr>
+                                    <script>
+                                        products = [...products, '@(JsonConvert.SerializeObject(cartItem.Product))'];
+                                        console.log(products);
+                                    </script>
+                                }
+                            }
+                        </tbody>
                     </table>
-                  </div>
-                </form>
-              </div>
-        
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="row mb-5">
+                </div>
+            </div>
+        </form>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row mb-5">
                     <div class="col-md-6 mb-3 mb-md-0">
-                      <button class="btn btn-black btn-sm btn-block">Update Cart</button>
+                        <button class="update-cart-btn btn btn-black btn-sm btn-block">Update Cart</button>
                     </div>
                     <div class="col-md-6">
-                      <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+                        <a asp-page="/Shop/Index" asp-route-headerJson="@headerJson" class="btn btn-outline-black btn-sm btn-block">Continue Shopping</a>
                     </div>
-                  </div>
-                  <div class="row">
+                </div>
+                <div class="row">
                     <div class="col-md-12">
-                      <label class="text-black h4" for="coupon">Coupon</label>
-                      <p>Enter your coupon code if you have one.</p>
+                        <label class="text-black h4" for="coupon">Coupon</label>
+                        <p>Enter your coupon code if you have one.</p>
                     </div>
                     <div class="col-md-8 mb-3 mb-md-0">
-                      <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
+                        <input type="text" class="form-control py-3" id="coupon" placeholder="Coupon Code">
                     </div>
                     <div class="col-md-4">
-                      <button class="btn btn-black">Apply Coupon</button>
+                        <button class="btn btn-black">Apply Coupon</button>
                     </div>
-                  </div>
                 </div>
-                <div class="col-md-6 pl-5">
-                  <div class="row justify-content-end">
-                    <div class="col-md-7">
-                      <div class="row">
-                        <div class="col-md-12 text-right border-bottom mb-5">
-                          <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                        </div>
-                      </div>
-                      <div class="row mb-3">
-                        <div class="col-md-6">
-                          <span class="text-black">Subtotal</span>
-                        </div>
-                        <div class="col-md-6 text-right">
-                          <strong class="text-black">$230.00</strong>
-                        </div>
-                      </div>
-                      <div class="row mb-5">
-                        <div class="col-md-6">
-                          <span class="text-black">Total</span>
-                        </div>
-                        <div class="col-md-6 text-right">
-                          <strong class="text-black">$230.00</strong>
-                        </div>
-                      </div>
-        
-                      <div class="row">
-                        <div class="col-md-12">
-                          <button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='checkout.html'">Proceed To Checkout</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-		</div>
+            <div class="col-md-6 pl-5">
+                <div class="row justify-content-end">
+                    <div class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-12 text-right border-bottom mb-5">
+                                <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
+                            </div>
+                        </div>
+                        <div class="row mb-5">
+                            <div class="col-md-6">
+                                <span class="text-black">Total</span>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong class="text-black total-cart-money">$ @Model.CurrentCart.CartTotal</strong>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <button class="btn btn-black btn-lg py-3 btn-block" onclick=product-price"window.location ='checkout.html' ">Proceed To Checkout</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        function updateTotalCartMoney() {
+            var totalCartMoney = 0;
+            $('.total-money').each(function () {
+                var money = parseFloat($(this).text());
+                totalCartMoney += money;
+            })
+            $('.total-cart-money').text('$' + totalCartMoney.toFixed(2));
+        }
+        function updateTotalMoney(row) {
+            var price = parseFloat($(row).find('.product-price').text().substring(1));
+            var amount = parseInt($(row).find('.quantity-amount').val());
+
+            if (amount === 0) {
+                $(row).remove();
+                return;
+            }
+            var totalMoney = (price * amount).toFixed(2);
+            $(row).find('.total-money').text(totalMoney);
+        }
+        function removeRow(row) {
+            $(row).remove();
+        }
+
+        updateTotalCartMoney();
+
+        // event when modify product quantity
+        $('.increase').click(function () {
+            var row = $(this).closest('tr');
+            updateTotalMoney(row);
+            updateTotalCartMoney();
+        });
+        $('.decrease').click(function () {
+            var row = $(this).closest('tr');
+            updateTotalMoney(row);
+            updateTotalCartMoney();
+        });
+        $('.btn-remove').click(function () {
+            var row = $(this).closest('tr');
+            removeRow(row);
+            updateTotalCartMoney();
+        });
+
+        // event when update cart
+        $('.update-cart-btn').click(function () {
+            var cartTotal = parseFloat($('.total-cart-money').text().substring(1));
+            var userName = '@((ViewData["Header"] as _HeaderModel.HeaderModel)?.UserName)';
+            var quantityList = [...$('.quantity-amount')];
+            quantityList = quantityList.map(q => parseInt($(q).val()));
+
+            var cartItems = quantityList.reduce((prev, val, idx) => {
+                return [...prev, {
+                    quantity: val,
+                    productJson: products[idx]
+                }]
+            }, []);
+
+            $.ajax({
+                url: '/Cart?handler=UpdateCart',
+                type: 'POST',
+                contentType: 'application/json',
+                //dataType: 'json',
+                data: JSON.stringify({
+                    cartDto: {
+                        cartTotal: cartTotal,
+                        userName: userName,
+                        cartItemDtos: [...cartItems]
+                    },
+                    currentCartJson: '@currentCartJson',
+                    currentCartItemsJson: '@currentCartItemsJson',
+                    currentHeaderJson: '@headerJson'
+                }),
+                success: function (response) {
+                    if (response.success) {
+                        $('#resultMessage').text(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#resultMessage').text("Error: " + error);
+                }
+            });
+        });
+    });
+</script> 

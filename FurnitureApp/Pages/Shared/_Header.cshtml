@@ -1,5 +1,9 @@
 ﻿@model _HeaderModel.HeaderModel
 
+@{
+	var headerJson = JsonConvert.SerializeObject(ViewData["Header"] as _HeaderModel.HeaderModel);
+}
+
 <!-- Start Header/Navigation -->
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
@@ -16,7 +20,7 @@
 					<a class="nav-link" asp-page="/Index">Home</a>
 				</li>
 				<li class="nav-item @(Model.CurrentTab == "shop" ? "active":"")">
-					<a class="nav-link" asp-page="/Shop/Index" asp-route-header="@(ViewData["Header"] as _HeaderModel.HeaderModel)">Shop</a>
+					<a class="nav-link" asp-page="/Shop/Index" asp-route-headerJson="@headerJson">Shop</a>
 				</li>
 				<li class="nav-item @(Model.CurrentTab == "about-us" ? "active":"")">
 					<a class="nav-link" href="about.html">About us</a>
@@ -33,10 +37,10 @@
 			</ul>
 
 			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-				<li><a class="nav-link" asp-page="/Cart" asp-route-header="@(ViewData["Header"] as _HeaderModel.HeaderModel)"><img src="images/cart.svg"></a></li>
+				<li class="@(Model.CurrentTab == "cart" ? "border border-4 border-warning rounded-circle":"")"><a class="nav-link" asp-page="/Cart" asp-route-headerJson="@headerJson"><img src="~/images/cart.svg"></a></li>
 				@if (String.IsNullOrEmpty(Model.UserName))
 				{
-					<li><a class="nav-link" href="Login"><img src="images/user.svg"></a></li>
+					<li><a class="nav-link" href="Login"><img src="~/images/user.svg"></a></li>
 				}
 				else
 				{
