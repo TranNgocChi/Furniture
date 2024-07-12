@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Home page";
     ViewData["CurrentTab"] = "home";
+    var headerJson = JsonConvert.SerializeObject(ViewData["Header"] as _HeaderModel.HeaderModel);
 }
 
 <!-- Start Product Section -->
@@ -14,22 +15,27 @@
             <div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
                 <h2 class="mb-4 section-title">Crafted with excellent material.</h2>
                 <p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
-                <p><a asp-page="/Shop/Index" asp-route-header="@(ViewData["Header"] as _HeaderModel.HeaderModel)" class="btn">Explore</a></p>
+                <p><a asp-page="/Shop/Index" asp-route-headerJson="@headerJson" class="btn">Explore</a></p>
             </div>
             <!-- End Column 1 -->
             <!-- Start Column 2 -->
             @foreach (var product in Model.Products)
             {
-                <div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                    <a class="product-item" asp-page="/Shop/ProductDetail" asp-route-productId="@product.Id" asp-route-header="@(ViewData["Header"] as _HeaderModel.HeaderModel)" >
-                        <img style="max-height: 120px" src="~/images/@product.ProductImage" class="img-fluid product-thumbnail">
-                        <h3 class="product-title">@product.ProductName</h3>
-                        <strong class="product-price">$@product.ProductPrice</strong>
-
+                <div class="col-12 col-md-4 col-lg-3 mb-5">
+                    <div class="product-item">
+                        <a asp-page="/Shop/ProductDetail" asp-route-productId="@product.Id" asp-route-headerJson="@headerJson">
+                            <img style="max-height: 120px" src="~/images/@product.ProductImage" class="img-fluid product-thumbnail">
+                            <h3 class="product-title">@product.ProductName</h3>
+                            <strong class="product-price">$ @product.ProductPrice</strong>
+                        </a>
                         <span class="icon-cross">
-                            <img src="images/cross.svg" class="img-fluid">
+                            <form method="post">
+                                <button style="padding: 20px; background: transparent; border: none;" asp-page-handler="AddToCart" asp-route-productJson="@(JsonConvert.SerializeObject(product))" asp-route-headerJson="@headerJson">
+                                    <img src="~/images/cross.svg" class="img-fluid">
+                                </button>
+                            </form>
                         </span>
-                    </a>
+                    </div>
                 </div>
             }
         </div>
