@@ -1,14 +1,17 @@
 using DataAccess.Repository.IRepository;
 using FurnitureApp.Models;
+using FurnitureApp.Pages.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
 using Microsoft.Extensions.Caching.Distributed;
+using Newtonsoft.Json;
 using System.Runtime.Serialization;
 using System.Security.Claims;
 using System.Text;
+using static FurnitureApp.Pages.Shared._HeaderModel;
 
 namespace FurnitureApp.Pages;
 
@@ -52,6 +55,7 @@ public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> l
         if (remoteError != null)
         {
             ErrorMessage = $"Provider Error: {remoteError}";
+            _logger.LogError($"Provider Error: {remoteError}");
             return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
         }
 
@@ -60,7 +64,8 @@ public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> l
         if (info == null)
         {
             ErrorMessage = "Error From Login Service.";
-            return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+			_logger.LogError("Error From Login Service.");
+			return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
         }
         // Take user information
         var user = info.Principal;
@@ -97,7 +102,14 @@ public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> l
         
         // Create Session
         var sessionId = Guid.NewGuid().ToString();
-        var sessionData = Encoding.UTF8.GetBytes(nameUser);
+        var headerModel = new HeaderModel{
+            UserName = nameUser,
+            UserEmail = emailUser,
+            IsUserLogined = true,
+        };
+        var jsonHeaderModel = JsonConvert.SerializeObject(headerModel);
+
+		var sessionData = Encoding.UTF8.GetBytes(jsonHeaderModel);
         var sessionOptions = new DistributedCacheEntryOptions
         {
             AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(1)

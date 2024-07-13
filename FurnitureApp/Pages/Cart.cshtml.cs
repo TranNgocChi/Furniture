@@ -1,4 +1,5 @@
 using DataAccess.Repository.IRepository;
+using FurnitureApp.Helpers;
 using FurnitureApp.Models;
 using FurnitureApp.Models.Cart;
 using FurnitureApp.Pages.Shared;
@@ -13,22 +14,23 @@ namespace FurnitureApp.Pages
     public class CartModel(ICartRepository cartRepository,
         ICartItemRepository cartItemRepository,
         IUserRepository userRepository,
-        IProductRepository productRepository) : PageModel
+        IProductRepository productRepository,
+        ISessionHelper sessionHelper) : PageModel
     {
         private readonly ICartRepository cartRepository = cartRepository;
         private readonly ICartItemRepository cartItemRepository = cartItemRepository;
         private readonly IUserRepository userRepository = userRepository;
         private readonly IProductRepository productRepository = productRepository;
-
-        [BindProperty]
+		private readonly ISessionHelper _sessionHelper = sessionHelper;
+		[BindProperty]
         public Cart CurrentCart { get; set; }
         [BindProperty]
         public List<CartItem>? CurrentCartItems { get; set; }
-        public void OnGet(string headerJson, string? addedProductJson)
+        public async Task OnGet(string headerJson, string? addedProductJson)
         {
-            var header = JsonConvert.DeserializeObject<_HeaderModel.HeaderModel>(headerJson);
+            var header = await _sessionHelper.GetSessionAsync(Request);
 
-            var currentUser = userRepository.GetAll().First(user => user.UserName == header.UserName);
+			var currentUser = userRepository.GetAll().First(user => user.Email == header.UserEmail);
 
             CurrentCart = cartRepository.GetByUserId(currentUser.Id.ToString() ?? "").LastOrDefault()
                 ?? new Cart { CartTotal = 0, UserCart = currentUser };
@@ -62,7 +64,7 @@ namespace FurnitureApp.Pages
             CurrentCartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartResquestDto.CurrentCartItemsJson);
 
             var header = JsonConvert.DeserializeObject<_HeaderModel.HeaderModel>(cartResquestDto.CurrentHeaderJson);
-            var currentUser = userRepository.GetAll().First(user => user.UserName == header.UserName);
+            var currentUser = userRepository.GetAll().First(user => user.Email == header.UserEmail);
 
             ViewData["Header"] = header;
 

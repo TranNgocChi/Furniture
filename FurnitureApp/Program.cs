@@ -1,6 +1,7 @@
 ﻿using DataAccess.Repository.CRepository;
 using DataAccess.Repository.IRepository;
 using FurnitureApp;
+using FurnitureApp.Helpers;
 using FurnitureApp.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -25,7 +26,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
+builder.Services.AddSingleton<ISessionHelper, SessionHelper>();
 // Đăng ký dịch vụ Identity
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -41,15 +42,15 @@ builder.Services.AddAuthentication(options =>
 .AddGoogle(googleOptions =>
 {
     IConfiguration googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-    googleOptions.ClientId = googleAuthNSection["ClientId"];
-    googleOptions.ClientSecret = googleAuthNSection["ClientSecret"];
+    googleOptions.ClientId = googleAuthNSection["ClientId"] ?? String.Empty;
+    googleOptions.ClientSecret = googleAuthNSection["ClientSecret"] ?? String.Empty;
     googleOptions.CallbackPath = "/login-google";
 })
 .AddFacebook(facebookOptions =>
 {
     IConfigurationSection facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
-    facebookOptions.AppId = facebookAuthNSection["AppId"];
-    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"];
+    facebookOptions.AppId = facebookAuthNSection["AppId"] ?? String.Empty;
+    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"] ?? String.Empty;
     facebookOptions.CallbackPath = "/login-facebook";
 });
 var app = builder.Build();

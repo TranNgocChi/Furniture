@@ -1,7 +1,7 @@
 ﻿@model _HeaderModel.HeaderModel
 
 @{
-	var headerJson = JsonConvert.SerializeObject(ViewData["Header"] as _HeaderModel.HeaderModel);
+	var headerJson = ViewData["Header"] as _HeaderModel.HeaderModel;
 }
 
 <!-- Start Header/Navigation -->

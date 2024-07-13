@@ -1,4 +1,5 @@
 using DataAccess.Repository.IRepository;
+using FurnitureApp.Helpers;
 using FurnitureApp.Models;
 using FurnitureApp.Pages.Shared;
 using Microsoft.AspNetCore.Mvc;
@@ -10,18 +11,20 @@ namespace FurnitureApp.Pages.Shop
     public class IndexModel : PageModel
     {
         private readonly IProductRepository _productRepository;
-        public IndexModel(IProductRepository productRepository)
+		private readonly ISessionHelper _sessionHelper;
+		public IndexModel(IProductRepository productRepository, ISessionHelper sessionHelper)
         {
             _productRepository = productRepository;
+            _sessionHelper = sessionHelper;
         }
 
         public List<Product> products { get; set; }
-        public void OnGet(string headerJson)
+        public async Task OnGet()
         {
             products = _productRepository.GetAll();
-            var header = JsonConvert.DeserializeObject<_HeaderModel.HeaderModel>(headerJson);
-            ViewData["Header"] = header;
-        }
+            ViewData["Header"] = await _sessionHelper.GetSessionAsync(Request);
+
+		}
 
         public ActionResult OnPostViewDetail(string productId)
         {
