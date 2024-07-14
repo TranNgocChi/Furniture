@@ -1,4 +1,5 @@
-﻿using FurnitureApp.Models;
+﻿
+using FurnitureApp.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
