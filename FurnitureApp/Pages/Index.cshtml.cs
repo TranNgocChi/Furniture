@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
-using System.Text;
-using static FurnitureApp.Pages.Shared._HeaderModel;
 
 namespace FurnitureApp.Pages
 {
@@ -22,7 +20,7 @@ namespace FurnitureApp.Pages
         private readonly IProductRepository productRepository = productRepository;
         private readonly IUserRepository userRepository = userRepository;
         private readonly ISessionHelper _sessionHelper = sessionHelper;
-        public string? SessionData {  get;}
+        public string? SessionData { get; }
         public List<CartItem> MyProperty { get; set; }
         public List<Product> Products { get; set; } = new List<Product>();
 
@@ -30,7 +28,7 @@ namespace FurnitureApp.Pages
         {
             Products = productRepository.GetAll().Take(PREVIEW_PRODUCTS_NUMBER).ToList();
             ViewData["Header"] = await _sessionHelper.GetSessionAsync(Request);
-		}
+        }
 
         public ActionResult OnPostAddToCart(string productJson, string headerJson)
         {

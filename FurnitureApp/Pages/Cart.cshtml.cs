@@ -21,38 +21,47 @@ namespace FurnitureApp.Pages
         private readonly ICartItemRepository cartItemRepository = cartItemRepository;
         private readonly IUserRepository userRepository = userRepository;
         private readonly IProductRepository productRepository = productRepository;
-		private readonly ISessionHelper _sessionHelper = sessionHelper;
-		[BindProperty]
+        private readonly ISessionHelper _sessionHelper = sessionHelper;
+        [BindProperty]
         public Cart CurrentCart { get; set; }
         [BindProperty]
         public List<CartItem>? CurrentCartItems { get; set; }
-        public async Task OnGet(string headerJson, string? addedProductJson)
+        public async Task<ActionResult> OnGetAsync(string headerJson, string? addedProductJson)
         {
             var header = await _sessionHelper.GetSessionAsync(Request);
 
-			var currentUser = userRepository.GetAll().First(user => user.Email == header.UserEmail);
-
-            CurrentCart = cartRepository.GetByUserId(currentUser.Id.ToString() ?? "").LastOrDefault()
-                ?? new Cart { CartTotal = 0, UserCart = currentUser };
-            CurrentCartItems = GetCartItems(CurrentCart?.Id.ToString() ?? "");
-
-            if (addedProductJson is not null)
+            if (header is null)
             {
-                var product = JsonConvert.DeserializeObject<Product>(addedProductJson);
-                if (CurrentCart.CartTotal > 0)
-                {
-                    CurrentCartItems = cartItemRepository.GetAllByCartId(CurrentCart.Id.ToString());
-                }
-
-                var existCartItem = CurrentCartItems.FirstOrDefault(c => c.Product.Id == product.Id);
-                if (existCartItem is not null) { existCartItem.Quantity++; }
-                else
-                {
-                    CurrentCartItems.Add(new CartItem { Cart = CurrentCart, Product = product, Quantity = 1, Selected = true });
-                }
+                return RedirectToPage("Index");
             }
+            else
+            {
+                var currentUser = userRepository.GetAll().First(user => user.Email == header.UserEmail);
 
-            ViewData["Header"] = header;
+                CurrentCart = cartRepository.GetByUserId(currentUser.Id.ToString() ?? "").LastOrDefault()
+                    ?? new Cart { CartTotal = 0, UserCart = currentUser };
+                CurrentCartItems = GetCartItems(CurrentCart?.Id.ToString() ?? "");
+
+                if (addedProductJson is not null)
+                {
+                    var product = JsonConvert.DeserializeObject<Product>(addedProductJson);
+                    if (CurrentCart.CartTotal > 0)
+                    {
+                        CurrentCartItems = cartItemRepository.GetAllByCartId(CurrentCart.Id.ToString());
+                    }
+
+                    var existCartItem = CurrentCartItems.FirstOrDefault(c => c.Product.Id == product.Id);
+                    if (existCartItem is not null) { existCartItem.Quantity++; }
+                    else
+                    {
+                        CurrentCartItems.Add(new CartItem { Cart = CurrentCart, Product = product, Quantity = 1, Selected = true });
+                    }
+                }
+
+                ViewData["Header"] = header;
+
+                return Page();
+            }
         }
 
         public ActionResult OnPostUpdateCart([FromBody] CartResquestDto cartResquestDto)
@@ -90,9 +99,11 @@ namespace FurnitureApp.Pages
                 if (currentProduct is not null)
                 {
                     var currentCartItem = CurrentCartItems?.FirstOrDefault(c => c.Product.Id == currentProduct.Id);
+
                     if (currentCartItem is not null)
                     {
                         currentCartItem.Quantity = currentCartItemDto.Quantity;
+                        if (!IsExistedCart(currentCartItem.Cart.Id.ToString())) currentCartItem.Cart = updateCart;
                         updateCartItems.Add(currentCartItem);
                     }
                     else
