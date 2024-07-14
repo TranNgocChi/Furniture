@@ -1,6 +1,10 @@
-﻿using FurnitureApp;
-using FurnitureApp.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using FurnitureApp.Models;
+using FurnitureApp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DataAccess.DAO
 {
@@ -28,7 +32,7 @@ namespace DataAccess.DAO
             try
             {
                 using AppDbContext appDbContext = new();
-                listCart = [.. appDbContext.Carts.Include(cart => cart.UserCart)];
+                listCart = [.. appDbContext.Carts];
             }
             catch (Exception ex)
             {
@@ -42,9 +46,7 @@ namespace DataAccess.DAO
             try
             {
                 using AppDbContext appDbContext = new();
-                var cartFound = appDbContext.Carts
-                    .Include(cart => cart.UserCart)
-                    .FirstOrDefault(c => c.Id.ToString() == id);
+                var cartFound = appDbContext.Carts.FirstOrDefault(c => c.Id.ToString() == id);
                 if (cartFound != null)
                 {
                     return cartFound;
@@ -57,29 +59,11 @@ namespace DataAccess.DAO
             }
         }
 
-        public List<Cart> GetByUserId(string userId)
-        {
-            List<Cart> cartsFound = [];
-            try
-            {
-                using AppDbContext appDbContext = new();
-                cartsFound = [..appDbContext.Carts
-                    .Include(cart => cart.UserCart)
-                    .Where(c => c.UserCart.Id.ToString() == userId)];
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return cartsFound;
-        }
-
         public void Create(Cart cart)
         {
             try
             {
                 using AppDbContext appDbContext = new();
-                cart = TrackCart(cart, appDbContext);
                 appDbContext.Carts.Add(cart);
                 appDbContext.SaveChanges();
             }
@@ -94,7 +78,6 @@ namespace DataAccess.DAO
             try
             {
                 using AppDbContext appDbContext = new();
-                cart = TrackCart(cart, appDbContext);
                 appDbContext.Entry<Cart>(cart).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
                 appDbContext.SaveChanges();
 
@@ -110,7 +93,7 @@ namespace DataAccess.DAO
             try
             {
                 using AppDbContext appDbContext = new();
-                cart = TrackCart(cart, appDbContext);
+                appDbContext.CartItems.RemoveRange(cart.CartItems);
                 appDbContext.Carts.Remove(cart);
                 appDbContext.SaveChanges();
 
@@ -128,6 +111,7 @@ namespace DataAccess.DAO
                 using AppDbContext appDbContext = new();
                 appDbContext.Carts.RemoveRange(GetAll());
                 appDbContext.SaveChanges();
+
             }
             catch (Exception ex)
             {
@@ -135,24 +119,6 @@ namespace DataAccess.DAO
             }
         }
 
-        private Cart TrackCart(Cart cart, AppDbContext appDbContext)
-        {
-            try
-            {
-                appDbContext.Entry(cart.UserCart).State = EntityState.Detached;
 
-                var currentUser = appDbContext.Users.FirstOrDefault(u => u.Id == cart.UserCart.Id);
-                if (currentUser is not null)
-                {
-                    cart.UserCart = currentUser;
-                }
-                return cart;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-
-        }
     }
 }

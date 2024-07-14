@@ -1,13 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-namespace FurnitureApp.Pages.Shared;
-
-public class _HeaderModel : ViewComponent
+using Microsoft.AspNetCore.Mvc.RazorPages;
+namespace FurnitureApp.Pages.Shared
 {
-    public class HeaderModel
+    public class _HeaderModel : ViewComponent
     {
-        public string? UserEmail { get; set; }
-        public string? UserName { get; set; }
-        public bool? IsUserLogined { get; set; }
-        public string CurrentTab { get; set; } = string.Empty;
+        public void OnGet()
+        {
+        }
     }
 }

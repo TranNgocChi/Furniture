@@ -1,14 +1,9 @@
-﻿@model _HeaderModel.HeaderModel
-
-@{
-	var headerJson = ViewData["Header"] as _HeaderModel.HeaderModel;
-}
-
+﻿
 <!-- Start Header/Navigation -->
 <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
 	<div class="container">
-		<a class="navbar-brand" href="index.html">Furni<span>.</span></a>
+		<a class="navbar-brand" href="index">Furni<span>.</span></a>
 
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
@@ -16,42 +11,25 @@
 
 		<div class="collapse navbar-collapse" id="navbarsFurni">
 			<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-				<li class="nav-item @(Model.CurrentTab == "home" ? "active":"")">
-					<a class="nav-link" asp-page="/Index">Home</a>
+				<li class="nav-item active">
+					<a class="nav-link" href="Index">Home</a>
 				</li>
-				<li class="nav-item @(Model.CurrentTab == "shop" ? "active":"")">
-					<a class="nav-link" asp-page="/Shop/Index" asp-route-headerJson="@headerJson">Shop</a>
-				</li>
-				<li class="nav-item @(Model.CurrentTab == "about-us" ? "active":"")">
-					<a class="nav-link" href="about.html">About us</a>
-				</li>
-				<li class="nav-item @(Model.CurrentTab == "service" ? "active":"")">
-					<a class="nav-link" href="services.html">Services</a>
-				</li>
-				<li class="nav-item @(Model.CurrentTab == "blog" ? "active":"")">
-					<a class="nav-link" href="blog.html">Blog</a>
-				</li>
-				<li class="nav-item @(Model.CurrentTab == "contact" ? "active":"")">
-					<a class="nav-link" href="contact.html">Contact us</a>
-				</li>
+				<li><a class="nav-link" href="shop">Shop</a></li>
+				<li><a class="nav-link" href="about">About us</a></li>
+				<li><a class="nav-link" href="services">Services</a></li>
+				<li><a class="nav-link" href="blog">Blog</a></li>
+				<li><a class="nav-link" href="contact">Contact us</a></li>
 			</ul>
 
 			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-				<li class="@(Model.CurrentTab == "cart" ? "border border-4 border-warning rounded-circle":"")"><a class="nav-link" asp-page="/Cart" asp-route-headerJson="@headerJson"><img src="~/images/cart.svg"></a></li>
-				@if (String.IsNullOrEmpty(Model.UserName))
-				{
-					<li><a class="nav-link" href="Login"><img src="~/images/user.svg"></a></li>
-				}
-				else
-				{
-					<li><a class="nav-link" href="Login">@Model.UserName</a></li>
-				}
+				<li><a class="nav-link" href="#"><img src="images/user.svg"></a></li>
+				<li><a class="nav-link" href="cart"><img src="images/cart.svg"></a></li>
+			</ul>
 		</div>
 	</div>
 
 </nav>
 <!-- End Header/Navigation -->
-
 <!-- Start Hero Section -->
 <div class="hero">
 	<div class="container">
@@ -65,7 +43,7 @@
 			</div>
 			<div class="col-lg-7">
 				<div class="hero-img-wrap">
-					<img src="~/images/leather_sofa.jpg" class="img-fluid">
+					<img src="images/couch.png" class="img-fluid">
 				</div>
 			</div>
 		</div>

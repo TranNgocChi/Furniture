@@ -2,14 +2,17 @@
 
 namespace FurnitureApp.Models
 {
-    public class Cart
-    {
-        [Key]
-        public Guid Id { get; set; }
+	public class Cart
+	{
+		[Key]
+		public Guid Id { get; set; } = Guid.NewGuid();
 
-        [Required]
-        public decimal CartTotal { get; set; }
+		[Required]
+		public decimal CartTotal {  get; set; }
 
-        public virtual required User UserCart { get; set; }
-    }
+		[Required]
+		public virtual required User UserCart { get; set; }
+
+		public virtual required ICollection<CartItem> CartItems { get; set;}
+	}
 }

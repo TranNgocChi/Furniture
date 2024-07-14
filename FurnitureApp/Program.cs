@@ -1,11 +1,8 @@
-﻿using DataAccess.Repository.CRepository;
+using DataAccess.Repository.CRepository;
 using DataAccess.Repository.IRepository;
 using FurnitureApp;
-using FurnitureApp.Helpers;
 using FurnitureApp.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Identity;
+using FurnitureApp.Pages.Shared;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,51 +10,23 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-// Inject Db Context
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Database"));
 });
-
-// Inject Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddSingleton<ISessionHelper, SessionHelper>();
-// Đăng ký dịch vụ Identity
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
 
-// Inject Google and Facebook services
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-})
-.AddCookie()
-.AddGoogle(googleOptions =>
-{
-    IConfiguration googleAuthNSection = builder.Configuration.GetSection("Authentication:Google");
-    googleOptions.ClientId = googleAuthNSection["ClientId"] ?? String.Empty;
-    googleOptions.ClientSecret = googleAuthNSection["ClientSecret"] ?? String.Empty;
-    googleOptions.CallbackPath = "/login-google";
-})
-.AddFacebook(facebookOptions =>
-{
-    IConfigurationSection facebookAuthNSection = builder.Configuration.GetSection("Authentication:Facebook");
-    facebookOptions.AppId = facebookAuthNSection["AppId"] ?? String.Empty;
-    facebookOptions.AppSecret = facebookAuthNSection["AppSecret"] ?? String.Empty;
-    facebookOptions.CallbackPath = "/login-facebook";
-});
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
