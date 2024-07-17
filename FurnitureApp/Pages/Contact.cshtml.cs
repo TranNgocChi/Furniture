@@ -13,18 +13,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FurnitureApp.Pages
 {
-	public class ContactModel() : PageModel
+	public class ContactModel : PageModel
 	{
-		
-
 		public void OnGet() { }
 
 		[BindProperty]
-		public Contacts Contact { get; set; }
+		public Contacts? Contact { get; set; }
 
 		public void OnPost()
 		{
-
 			MailMessage mailMessage = new MailMessage();
 			mailMessage.To.Add("furnitureshop14072024@gmail.com");
 			mailMessage.From = new MailAddress("furnitureshop1200@gmail.com");
@@ -58,8 +55,15 @@ namespace FurnitureApp.Pages
 
 			try
 			{
+				Console.WriteLine(Contact.FirstName);
 				smtpClient.Send(mailMessage);
-				Console.WriteLine("=========================Successfull================");
+				Contact.FirstName = null;
+                Contact.LastName = null;
+                Contact.Email = null;
+                Contact.Message = null;
+
+				TempData["Message"] = "Send Message Succesfully!";
+                Console.WriteLine("=========================Successfull================");
 			}
 			catch (Exception ex)
 			{
