@@ -23,16 +23,16 @@
 					<a class="nav-link" asp-page="/Shop/Index" asp-route-headerJson="@headerJson">Shop</a>
 				</li>
 				<li class="nav-item @(Model.CurrentTab == "about-us" ? "active":"")">
-					<a class="nav-link" href="about.html">About us</a>
+					<a class="nav-link" href="/About">About us</a>
 				</li>
 				<li class="nav-item @(Model.CurrentTab == "service" ? "active":"")">
-					<a class="nav-link" href="services.html">Services</a>
+					<a class="nav-link" href="/Services">Services</a>
 				</li>
 				<li class="nav-item @(Model.CurrentTab == "blog" ? "active":"")">
-					<a class="nav-link" href="blog.html">Blog</a>
+					<a class="nav-link" href="/Blog">Blog</a>
 				</li>
 				<li class="nav-item @(Model.CurrentTab == "contact" ? "active":"")">
-					<a class="nav-link" href="contact.html">Contact us</a>
+					<a class="nav-link" href="/Contact">Contact us</a>
 				</li>
 			</ul>
 

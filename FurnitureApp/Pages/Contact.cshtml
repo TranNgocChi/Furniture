@@ -51,30 +51,34 @@
                             </div> <!-- /.service -->
                         </div>
                     </div>
-
+                    @if (TempData["Message"] != null)
+                    {
+                        <h3 style="color: green">@TempData["Message"]</h3>
+                    }
+                    
                     <form method="post"  >
                         <div class="row">
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="text-black" for="fname">First name</label>
-                                    <input type="text" class="form-control" id="fname" asp-for="Contact.FirstName" required pattern="^\s.*\S|\S.*\S$">
+                                    <input type="text" class="form-control" id="fname" required pattern="^\s.*\S|\S.*\S$">
                                 </div>
                             </div>
                             <div class="col-6">
                                 <div class="form-group">
                                     <label class="text-black" for="lname">Last name</label>
-                                    <input type="text" class="form-control" id="lname" asp-for="Contact.LastName" required pattern="^\s.*\S|\S.*\S$">
+                                    <input type="text" class="form-control" id="lname" required pattern="^\s.*\S|\S.*\S$">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="text-black" for="email">Email address</label>
-                            <input type="email" class="form-control" id="email" asp-for="Contact.Email" required>
+                            <input type="email" class="form-control" id="email" required>
                         </div>
 
                         <div class="form-group mb-5">
                             <label class="text-black" for="message">Message</label>
-                            <textarea  class="form-control" id="message" cols="30" rows="5" asp-for="Contact.Message" required></textarea>
+                            <textarea  class="form-control" id="message" cols="30" rows="5" required></textarea>
                         </div>
 
                         <button type="submit" class="btn btn-primary-hover-outline">Send Message</button>
