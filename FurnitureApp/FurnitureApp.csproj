@@ -7,7 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Pages\Shared\_Layout2.cshtml.css" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="Pages\Shared\_Layout2.cshtml.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Binders\" />
+    <Folder Include="Pages\Admin\Users\" />
     <Folder Include="Validation\" />
   </ItemGroup>
 
