@@ -17,6 +17,7 @@
   <ItemGroup>
     <Folder Include="Binders\" />
     <Folder Include="Pages\Admin\Users\" />
+    <Folder Include="Pages\Country\" />
     <Folder Include="Validation\" />
   </ItemGroup>
 
