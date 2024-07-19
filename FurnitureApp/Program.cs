@@ -54,6 +54,8 @@ builder.Services.AddAuthentication(options =>
     facebookOptions.AppSecret = facebookAuthNSection["AppSecret"] ?? String.Empty;
     facebookOptions.CallbackPath = "/login-facebook";
 });
+
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -71,5 +73,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapRazorPages();
+
+app.MapHub<SignalRServer>("/signalRServer");
 
 app.Run();
