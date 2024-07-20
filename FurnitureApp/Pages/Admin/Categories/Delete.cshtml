@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Delete";
+    Layout = "_LayoutAdmin";
+    ViewData["CurrentTab"] = "category";
 }
 
 <h1>Delete</h1>
@@ -11,7 +13,7 @@
 <div>
     <h4>Category</h4>
     <hr />
-    <dl class="row">
+    <dl class="row d-flex flex-column">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Category.CategoryName)
         </dt>

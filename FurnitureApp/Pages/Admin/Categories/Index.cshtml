@@ -3,6 +3,8 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "_LayoutAdmin";
+    ViewData["CurrentTab"] = "category";
 }
 
 <h1>Index</h1>
@@ -22,7 +24,7 @@
     <tbody>
 @foreach (var item in Model.Category) {
         <tr>
-            <td>
+            <td class="">
                 @Html.DisplayFor(modelItem => item.CategoryName)
             </td>
             <td>

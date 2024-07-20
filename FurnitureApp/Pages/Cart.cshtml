@@ -37,7 +37,14 @@
                                     <tr class="cart-item-row">
                                         <td class="product-thumbnail">
                                             <a asp-page="/Shop/ProductDetail" asp-route-productId="@cartItem.Product.Id" asp-route-headerJson="@headerJson">
-                                                <img src="~/images/@cartItem.Product.ProductImage" alt="Image" class="img-fluid">
+                                                @if ((cartItem.Product.ProductImage ?? "").Contains("http"))
+                                                {
+                                                    <img src="@cartItem.Product.ProductImage" class="img-fluid">
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/images/@cartItem.Product.ProductImage" class="img-fluid">
+                                                }
                                             </a>
                                         </td>
                                         <td class="product-name d-flex flex-column">
@@ -220,7 +227,6 @@
                 url: '/Cart?handler=UpdateCart',
                 type: 'POST',
                 contentType: 'application/json',
-                //dataType: 'json',
                 data: JSON.stringify({
                     cartDto: {
                         cartTotal: cartTotal,

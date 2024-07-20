@@ -11,7 +11,11 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages()
+    .AddRazorPagesOptions(o =>
+    {
+        o.Conventions.AddPageRoute("/Admin/Login", "/Admin");
+    }); ;
 
 // Inject Db Context
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -54,6 +58,8 @@ builder.Services.AddAuthentication(options =>
     facebookOptions.AppSecret = facebookAuthNSection["AppSecret"] ?? String.Empty;
     facebookOptions.CallbackPath = "/login-facebook";
 });
+
+builder.Services.AddSignalR();
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -71,5 +77,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapRazorPages();
+
+app.MapHub<SignalRServer>("/signalRServer");
 
 app.Run();

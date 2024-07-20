@@ -13,7 +13,14 @@
         {
             <!-- Product Image -->
             <div class="col-md-6">
-                <img src="~/images/@Model.Product.ProductImage" class="d-block w-100">
+                @if ((Model.Product.ProductImage ?? "").Contains("http"))
+                {
+                    <img src="@Model.Product.ProductImage" class="d-block w-100">
+                }
+                else
+                {
+                    <img src="~/images/@Model.Product.ProductImage" class="d-block w-100">
+                }
             </div>
             <!-- Product Details -->
 

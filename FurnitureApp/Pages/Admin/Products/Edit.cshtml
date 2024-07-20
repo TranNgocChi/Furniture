@@ -2,7 +2,9 @@
 @model FurnitureApp.Pages.Admin.Products.EditModel
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Edit";
+    ViewData["CurrentTab"] = "product";
 }
 
 <h1>Edit</h1>
@@ -10,7 +12,7 @@
 <h4>Product</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-12">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Product.Id" />
@@ -31,7 +33,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Product.Quantity" class="control-label"></label>
-                <input asp-for="Product.Quantity" class="form-control" />
+                <input type="number" asp-for="Product.Quantity" class="form-control" />
                 <span asp-validation-for="Product.Quantity" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,6 +42,17 @@
                 <span asp-validation-for="Product.ProductImage" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Product.CategoryId" class="control-label"></label>
+                <select class="form-select" asp-for="Product.CategoryId">
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category.Id">
+                            @category.CategoryName
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="form-group mt-3">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

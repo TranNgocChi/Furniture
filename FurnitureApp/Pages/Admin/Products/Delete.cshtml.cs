@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FurnitureApp.Models.Product;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using FurnitureApp;
-using FurnitureApp.Models;
 
 namespace FurnitureApp.Pages.Admin.Products
 {
     public class DeleteModel : PageModel
     {
         private readonly FurnitureApp.AppDbContext _context;
+        private readonly IHubContext<SignalRServer> hubContext;
 
-        public DeleteModel(FurnitureApp.AppDbContext context)
+        public DeleteModel(FurnitureApp.AppDbContext context, IHubContext<SignalRServer> hubContext)
         {
             _context = context;
+            this.hubContext = hubContext;
         }
 
         [BindProperty]
-        public Product Product { get; set; } = default!;
+        public ProductUpdateDto Product { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
@@ -29,7 +27,7 @@ namespace FurnitureApp.Pages.Admin.Products
                 return NotFound();
             }
 
-            var product = await _context.Products.FirstOrDefaultAsync(m => m.Id == id);
+            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(m => m.Id == id);
 
             if (product == null)
             {
@@ -37,7 +35,16 @@ namespace FurnitureApp.Pages.Admin.Products
             }
             else
             {
-                Product = product;
+                Product = new ProductUpdateDto
+                {
+                    Id = product.Id,
+                    ProductName = product.ProductName,
+                    ProductDescription = product.ProductDescription,
+                    ProductPrice = product.ProductPrice,
+                    Quantity = product.Quantity,
+                    ProductImage = product.ProductImage,
+                    CategoryId = product.Category.Id.ToString()
+                };
             }
             return Page();
         }
@@ -52,10 +59,11 @@ namespace FurnitureApp.Pages.Admin.Products
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
-                Product = product;
-                _context.Products.Remove(Product);
+                _context.Products.Remove(product);
                 await _context.SaveChangesAsync();
             }
+
+            await hubContext.Clients.All.SendAsync("LoadProducts");
 
             return RedirectToPage("./Index");
         }

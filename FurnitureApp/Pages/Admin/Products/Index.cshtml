@@ -2,8 +2,9 @@
 @model FurnitureApp.Pages.Admin.Products.IndexModel
 
 @{
-    Layout = "_Layout2";
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Index";
+    ViewData["CurrentTab"] = "product";
 }
 
 <h1>Index</h1>
@@ -32,30 +33,6 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model.Product) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductDescription)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductImage)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+    <tbody id="real-time-products">
     </tbody>
 </table>
