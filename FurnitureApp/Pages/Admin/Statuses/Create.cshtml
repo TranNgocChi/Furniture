@@ -2,8 +2,9 @@
 @model FurnitureApp.Pages.Admin.Statuses.CreateModel
 
 @{
-    Layout = "_Layout2";
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Create";
+    ViewData["CurrentTab"] = "status";
 }
 
 <h1>Create</h1>
@@ -11,7 +12,7 @@
 <h4>Status</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-12">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">

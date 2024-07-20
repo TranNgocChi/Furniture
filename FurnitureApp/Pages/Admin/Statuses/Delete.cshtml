@@ -2,7 +2,9 @@
 @model FurnitureApp.Pages.Admin.Statuses.DeleteModel
 
 @{
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Delete";
+    ViewData["CurrentTab"] = "status";
 }
 
 <h1>Delete</h1>
@@ -11,7 +13,7 @@
 <div>
     <h4>Status</h4>
     <hr />
-    <dl class="row">
+    <dl class="row d-flex flex-column">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Status.StatusOrder)
         </dt>

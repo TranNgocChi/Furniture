@@ -9,7 +9,6 @@
 <div class="untree_co-section product-section before-footer-section">
     <div class="container">
         <div class="row">
-            <!-- images/product-3.png -->
             @if (Model.products != null)
             {
                 foreach (var product in Model.products)
@@ -17,7 +16,14 @@
                     <div class="col-12 col-md-4 col-lg-3 mb-5">
                         <div class="product-item">
                             <a asp-page="ProductDetail" asp-route-productId="@product.Id" asp-route-headerJson="@headerJson">
-                                <img style="max-height: 120px" src="~/images/@product.ProductImage" class="img-fluid product-thumbnail">
+                                @if ((product.ProductImage ?? "").Contains("http"))
+                                {
+                                    <img style="max-height: 120px" src="@product.ProductImage" class="img-fluid product-thumbnail">
+                                }
+                                else
+                                {
+                                    <img style="max-height: 120px" src="~/images/@product.ProductImage" class="img-fluid product-thumbnail">
+                                }
                                 <h3 class="product-title">@product.ProductName</h3>
                                 <strong class="product-price">$ @product.ProductPrice</strong>
                             </a>
