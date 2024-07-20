@@ -1,6 +1,7 @@
 ﻿@page
 @model FurnitureApp.Pages.CheckoutModel
 @{
+	var dis = Model.Districts;
 }
 <div class="untree_co-section">
 	<div class="container">
@@ -12,6 +13,14 @@
 						<label for="c_city" class="text-black">City <span class="text-danger">*</span></label>
 						<select id="c_city" class="form-control" onchange="SelectedCity()">
 							<option value="00" selected>Select a city</option>
+							@if (Model.Provinces != null && Model.Provinces.Count > 0)
+							{
+								foreach (var province in Model.Provinces)
+								{
+									<option name="@province.Name" value="@province.Code">@province.Name</option>
+								}
+							}
+							
 						</select>
 					</div>
 					
@@ -19,6 +28,13 @@
 						<label for="c_district" class="text-black">District <span class="text-danger">*</span></label>
 						<select id="c_district" class="form-control" onchange="SelectedDistrict()">
 							<option value="000">Select a district</option>
+							@if (Model.Districts != null && Model.Districts.Count > 0)
+							{
+								foreach (var district in Model.Districts)
+								{
+									<option name="@district.Name" value="@district.Code">@district.Name</option>
+								}
+							}
 						</select>
 					</div>
 
@@ -88,6 +104,12 @@
 										<td>$100.00</td>
 									</tr>
 									<tr>
+										<td class="text-black font-weight-bold">
+											<strong style="color: blue;">Shipping</strong>
+										</td>
+										<td class="text-black shipping">0 VND</td>
+									</tr>
+									<tr>
 										<td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
 										<td class="text-black">$350.00</td>
 									</tr>
@@ -141,18 +163,19 @@
 		<!-- </form> -->
 	</div>
 </div>
-
+<input type="hidden" id="adminAddress" value="@Model.ShopAddress.country, @Model.ShopAddress.city,
+		@Model.ShopAddress.district, @Model.ShopAddress.town" />
 <script>
 	function SelectedCity() {
 		var selectedCity = document.getElementById("c_city").value;
 		$.ajax({
-			url: '/get-selectedCity',
-			type: 'POST',
+			url: '/Country/SelectedCity',
+			type: 'GET',
 			data: { selectedCity: selectedCity },
 			success: function (response) {
 				var districts = response.districtFounds;
 				document.getElementById("c_district").innerHTML = "";
-
+				console.log(districts.length)
 				for (var i = 0; i < districts.length; i++) {
 					var option = document.createElement("option");
 					option.value = districts[i].code;
@@ -163,13 +186,13 @@
 				}
 				if (document.getElementById("c_city").value == '00') {
 					$('.shipping').text('$' + 0);
-					document.getElementById("c_town").innerHTML = "";
+					document.getElementById("c_ward").innerHTML = "";
 					var option = document.createElement("option");
 					option.value = "0000";
 					option.text = "Select a town";
 
 					// Thêm option vào thẻ select
-					document.getElementById("c_town").appendChild(option);
+					document.getElementById("c_ward").appendChild(option);
 				} else {
 					SelectedDistrict();
 				}
@@ -185,12 +208,12 @@
 	function SelectedDistrict() {
 		var selectedDistrict = document.getElementById("c_district").value;
 		$.ajax({
-			url: '/get-selectedDistrict',
-			type: 'POST',
+			url: 'Country/SelectedDistrict',
+			type: 'GET',
 			data: { selectedDistrict: selectedDistrict },
 			success: function (response) {
 				var towns = response.wardFounds;
-				document.getElementById("c_town").innerHTML = "";
+				document.getElementById("c_ward").innerHTML = "";
 
 				for (var i = 0; i < towns.length; i++) {
 					var option = document.createElement("option");
@@ -198,7 +221,7 @@
 					option.text = towns[i].name;
 
 					// Thêm option vào thẻ select
-					document.getElementById("c_town").appendChild(option);
+					document.getElementById("c_ward").appendChild(option);
 				}
 				SelectedTown();
 				console.log('Danh sách sản phẩm được cập nhật thành công.');
@@ -215,7 +238,7 @@
 
 	function calculateDistance() {
 		var origin = document.getElementById("adminAddress").value;
-		var destination = document.getElementById("c_country").selectedOptions[0].text + ", " +
+		var destination = "Viet Nam" + ", " +
 			document.getElementById("c_city").selectedOptions[0].text + ", " +
 			document.getElementById("c_district").selectedOptions[0].text + ", " +
 			document.getElementById("c_ward").selectedOptions[0].text;
