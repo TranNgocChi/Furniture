@@ -12035,3 +12035,10 @@ INSERT INTO wards(code,name,name_en,full_name,full_name_en,code_name,district_co
 -- ----------------------------------
 -- END OF SCRIPT FILE --
 ```
+
+### How to route to admin page
+1. Add "/admin" endpoint when you are in Homepage
+- Example: https://localhost:7125/admin
+2. Login admin account
+- Username: admin
+- Password: Admin@123

@@ -1,30 +1,25 @@
 ﻿using FurnitureApp;
 using FurnitureApp.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataAccess.DAO
 {
-	public class ProductDAO
-	{
-		//Using Singleton Design Pattern
-		private static ProductDAO instance = new();
-		private static readonly object instanceLock = new();
-		private ProductDAO() { }
-		public static ProductDAO Instance
-		{
-			get
-			{
-				lock (instanceLock)
-				{
+    public class ProductDAO
+    {
+        //Using Singleton Design Pattern
+        private static ProductDAO instance = new();
+        private static readonly object instanceLock = new();
+        private ProductDAO() { }
+        public static ProductDAO Instance
+        {
+            get
+            {
+                lock (instanceLock)
+                {
                     instance ??= new ProductDAO();
-				}
-				return instance;	
-			}
-		}
+                }
+                return instance;
+            }
+        }
 
         public List<Product> GetAll()
         {
@@ -104,7 +99,7 @@ namespace DataAccess.DAO
 
                 //Delete Product in OrderItem
                 var orderItemContainProduct = appDbContext.OrderItems.SingleOrDefault(o => o.Product.Id == product.Id);
-                if(orderItemContainProduct != null)
+                if (orderItemContainProduct != null)
                 {
                     appDbContext.OrderItems.Remove(orderItemContainProduct);
                 }
