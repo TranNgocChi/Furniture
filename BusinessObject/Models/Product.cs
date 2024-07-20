@@ -16,10 +16,10 @@ namespace FurnitureApp.Models
         public string? ProductDescription { get; set; }
 
         [Required(ErrorMessage = "Price Product is required")]
-        [Range(0, 9999999999, ErrorMessage = "Price can not exeed 10 digits")]
+        [Range(0, 9999999999, ErrorMessage = "Price can not exceed 10 digits")]
         public decimal ProductPrice { get; set; }
 
-        [StringLength(10)]
+        [Range(0, 9999999999, ErrorMessage = "Quantity can not exceed 10 digits")]
         public int Quantity { get; set; }
 
         [StringLength(200, ErrorMessage = "Product Image Length <= 200")]
@@ -27,6 +27,5 @@ namespace FurnitureApp.Models
 
         [Required(ErrorMessage = "Product must have suitable category")]
         public virtual required Category Category { get; set; }
-
     }
 }
