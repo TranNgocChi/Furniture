@@ -30,6 +30,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddSingleton<ISessionHelper, SessionHelper>();
 // Đăng ký dịch vụ Identity
 builder.Services.AddIdentity<User, IdentityRole>()

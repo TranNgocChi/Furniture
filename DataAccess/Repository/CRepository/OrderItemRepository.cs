@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DataAccess.DAO;
+using DataAccess.Repository.IRepository;
+using FurnitureApp.Models;
 
 namespace DataAccess.Repository.CRepository
 {
-    public class OrderItemRepository
+	public class OrderItemRepository : IOrderItemRepository
 	{
+		public void Create(OrderItem orderItem) => OrderItemDAO.Instance.Create(orderItem);
 	}
 }

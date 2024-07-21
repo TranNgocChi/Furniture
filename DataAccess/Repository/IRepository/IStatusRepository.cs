@@ -2,7 +2,7 @@
 
 namespace DataAccess.Repository.IRepository;
 
-public interface IOrderItemRepository
+public interface IStatusRepository
 {
-	public void Create(OrderItem orderItem);
+	public List<Status> GetAll();
 }

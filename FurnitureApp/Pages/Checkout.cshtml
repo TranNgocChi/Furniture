@@ -5,13 +5,14 @@
 }
 <div class="untree_co-section">
 	<div class="container">
+		<form method="POST">
 		<div class="row">
 			<div class="col-md-6 mb-5 mb-md-0">
 				<h2 class="h3 mb-3 text-black">Billing Details</h2>
 				<div class="p-3 p-lg-5 border bg-white">
 					<div class="form-group">
 						<label for="c_city" class="text-black">City <span class="text-danger">*</span></label>
-						<select id="c_city" class="form-control" onchange="SelectedCity()">
+						<select id="c_city" name="c_city" class="form-control" onchange="SelectedCity()">
 							<option value="00" selected>Select a city</option>
 							@if (Model.Provinces != null && Model.Provinces.Count > 0)
 							{
@@ -26,7 +27,7 @@
 					
 					<div class="form-group">
 						<label for="c_district" class="text-black">District <span class="text-danger">*</span></label>
-						<select id="c_district" class="form-control" onchange="SelectedDistrict()">
+							<select id="c_district" name="c_district" class="form-control" onchange="SelectedDistrict()">
 							<option value="000">Select a district</option>
 							@if (Model.Districts != null && Model.Districts.Count > 0)
 							{
@@ -40,7 +41,7 @@
 
 					<div class="form-group">
 						<label for="c_ward" class="text-black">Ward <span class="text-danger">*</span></label>
-						<select id="c_ward" class="form-control" onchange="SelectedWard()">
+						<select id="c_ward" name="c_ward" class="form-control" onchange="SelectedWard()">
 							<option value="0000">Select a ward</option>
 						</select>
 					</div>
@@ -91,18 +92,23 @@
 						<div class="p-3 p-lg-5 border bg-white">
 							<table class="table site-block-order-table mb-5">
 								<thead>
-								<th>Product</th>
-								<th>Total</th>
+									<th>Product</th>
+									<th>Total</th>
 								</thead>
 								<tbody>
-									<tr>
-										<td>Top Up T-Shirt <strong class="mx-2">x</strong> 1</td>
-										<td>$250.00</td>
-									</tr>
-									<tr>
-										<td>Polo Shirt <strong class="mx-2">x</strong>   1</td>
-										<td>$100.00</td>
-									</tr>
+									@if (Model.CartItems != null && Model.CartItems.Count > 0)
+									{
+										@foreach (var cartItem in Model.CartItems)
+										{
+											<tr>
+												<td>@cartItem.Product.ProductName 
+													<strong class="mx-2">x</strong> 
+													@cartItem.Quantity
+												</td>
+												<td>@(cartItem.Product.ProductPrice * cartItem.Quantity) VND</td>
+											</tr>
+										}
+									}
 									<tr>
 										<td class="text-black font-weight-bold">
 											<strong style="color: blue;">Shipping</strong>
@@ -110,48 +116,29 @@
 										<td class="text-black shipping">0 VND</td>
 									</tr>
 									<tr>
-										<td class="text-black font-weight-bold"><strong>Cart Subtotal</strong></td>
-										<td class="text-black">$350.00</td>
+										<td class="text-black font-weight-bold"><strong style="color: forestgreen;">Cart Subtotal</strong></td>
+										<td class="text-black cart-total">@Model.Cart?.CartTotal VND</td>
 									</tr>
 									<tr>
-										<td class="text-black font-weight-bold"><strong>Order Total</strong></td>
-										<td class="text-black font-weight-bold"><strong>$350.00</strong></td>
+										<td class="text-black font-weight-bold"><strong style="color: red">Order Total</strong></td>
+										<td class="text-black font-weight-bold total"><strong>@Model.Cart?.CartTotal.ToString("0.00") VND</strong></td>
 									</tr>
 								</tbody>
 							</table>
 
 							<div class="border p-3 mb-3">
-								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Direct Bank Transfer</a></h3>
-
+								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsebank" role="button" aria-expanded="false" aria-controls="collapsebank">Payment Method</a></h3>
+								<br />
 								<div class="collapse" id="collapsebank">
-									<div class="py-2">
-										<p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-									</div>
-								</div>
-							</div>
-
-							<div class="border p-3 mb-3">
-								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsecheque" role="button" aria-expanded="false" aria-controls="collapsecheque">Cheque Payment</a></h3>
-
-								<div class="collapse" id="collapsecheque">
-									<div class="py-2">
-										<p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-									</div>
-								</div>
-							</div>
-
-							<div class="border p-3 mb-5">
-								<h3 class="h6 mb-0"><a class="d-block" data-bs-toggle="collapse" href="#collapsepaypal" role="button" aria-expanded="false" aria-controls="collapsepaypal">Paypal</a></h3>
-
-								<div class="collapse" id="collapsepaypal">
-									<div class="py-2">
-										<p class="mb-0">Make your payment directly into our bank account. Please use your Order ID as the payment reference. Your order won’t be shipped until the funds have cleared in our account.</p>
-									</div>
+									<select id="payment_method" name="payment_method" class="form-control">
+										<option value="payment_delivery" selected>Payment On Delivery</option>
+										<option value="payment_vnpay" >Payment By VN Pay</option>
+									</select>
 								</div>
 							</div>
 
 							<div class="form-group">
-								<button class="btn btn-black btn-lg py-3 btn-block" onclick="window.location='thankyou.html'">Place Order</button>
+								<button class="btn btn-black btn-lg py-3 btn-block">Place Order</button>
 							</div>
 
 						</div>
@@ -160,11 +147,15 @@
 
 			</div>
 		</div>
+		<input type="hidden" id="totalPriceInput" name="totalPrice" value="" />
+		<input type="hidden" id="shipping" name="shipping" value="" />
+		</form>
 		<!-- </form> -->
 	</div>
 </div>
-<input type="hidden" id="adminAddress" value="@Model.ShopAddress.country, @Model.ShopAddress.city,
-		@Model.ShopAddress.district, @Model.ShopAddress.town" />
+
+<input type="hidden" id="adminAddress" value="@Model.ShopAddress?.Country, @Model.ShopAddress?.City, @Model.ShopAddress?.District, @Model.ShopAddress?.Ward" />
+
 <script>
 	function SelectedCity() {
 		var selectedCity = document.getElementById("c_city").value;
@@ -185,7 +176,7 @@
 					document.getElementById("c_district").appendChild(option);
 				}
 				if (document.getElementById("c_city").value == '00') {
-					$('.shipping').text('$' + 0);
+					$('.shipping').text(0 +' VND');
 					document.getElementById("c_ward").innerHTML = "";
 					var option = document.createElement("option");
 					option.value = "0000";
@@ -223,7 +214,7 @@
 					// Thêm option vào thẻ select
 					document.getElementById("c_ward").appendChild(option);
 				}
-				SelectedTown();
+				SelectedWard();
 				console.log('Danh sách sản phẩm được cập nhật thành công.');
 			},
 			error: function (xhr, status, error) {
@@ -238,12 +229,13 @@
 
 	function calculateDistance() {
 		var origin = document.getElementById("adminAddress").value;
-		var destination = "Viet Nam" + ", " +
+		var destination = "Viet Nam, " +
 			document.getElementById("c_city").selectedOptions[0].text + ", " +
 			document.getElementById("c_district").selectedOptions[0].text + ", " +
 			document.getElementById("c_ward").selectedOptions[0].text;
 
 		// Call OpenStreetMap Nominatim API to geocode the addresses
+		console.error(origin)
 		$.getJSON('https://nominatim.openstreetmap.org/search?format=json&q=' + origin, function (data1) {
 			if (data1.length > 0) {
 				var originLat = data1[0].lat;
@@ -271,20 +263,20 @@
 						} else {
 							shipping = 70;
 						}
-						$('.shipping').text('$' + shipping);
+						$('.shipping').text(shipping + ' VND');
 
 						var cartTotal = $(".text-black.cart-total").text().replace("$", "");
 						var total = shipping + parseFloat(cartTotal);
 
-						$('.total strong').text('$' + total);
+						$('.total strong').text(total + ' VND');
 						document.getElementById("totalPriceInput").value = total;
 						document.getElementById("shipping").value = shipping;
 					} else {
-
+						console.error("No value returned of User Address")
 					}
 				});
 			} else {
-				alert('Origin address not found');
+				console.error("No value returned of Shop Address")
 			}
 		});
 	}

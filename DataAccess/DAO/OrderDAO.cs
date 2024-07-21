@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.DAO
 {
@@ -32,8 +33,14 @@ namespace DataAccess.DAO
             try
             {
                 using AppDbContext appDbContext = new();
-                listOrder = [.. appDbContext.Orders];
-            }
+                listOrder = appDbContext.Orders
+				.Include(o => o.OrderAddress)
+				.Include(o => o.UserOrder)
+				.Include(o => o.Status)
+				.Include(o => o.OrderItems)
+				.ThenInclude(oi => oi.Product)
+				.ToList();
+			}
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -64,7 +71,62 @@ namespace DataAccess.DAO
             try
             {
                 using AppDbContext appDbContext = new();
-                appDbContext.Orders.Add(order);
+
+				// Check and Track Address
+				if (order.OrderAddress != null)
+				{
+					var existingAddress = appDbContext.Addresses.Find(order.OrderAddress.Id);
+					if (existingAddress != null)
+					{
+						appDbContext.Entry(existingAddress).State = EntityState.Unchanged;
+						order.OrderAddress = existingAddress;
+					}
+				}
+
+				// Check and Track Order
+				if (order.UserOrder != null)
+				{
+					var existingUser = appDbContext.Users.Find(order.UserOrder.Id);
+					if (existingUser != null)
+					{
+						appDbContext.Entry(existingUser).State = EntityState.Unchanged;
+						order.UserOrder = existingUser;
+					}
+				}
+
+				// Check and Track Status
+				if (order.Status != null)
+				{
+					var existingStatus = appDbContext.Statuses.Find(order.Status.Id);
+					if (existingStatus != null)
+					{
+						appDbContext.Entry(existingStatus).State = EntityState.Unchanged;
+						order.Status = existingStatus;
+					}
+				}
+
+				// Check and Track Order User
+				if (order.UserOrder != null)
+				{
+					var existingUser = appDbContext.Users.Find(order.UserOrder.Id);
+					if (existingUser != null)
+					{
+						appDbContext.Entry(existingUser).State = EntityState.Unchanged;
+						order.UserOrder = existingUser;
+					}
+				}
+
+				// Check and Track OrderItems
+				foreach (var orderItem in order.OrderItems)
+				{
+					var existingProduct = appDbContext.Products.Find(orderItem.Product.Id);
+					if (existingProduct != null)
+					{
+						appDbContext.Entry(existingProduct).State = EntityState.Unchanged;
+						orderItem.Product = existingProduct;
+					}
+				}
+				appDbContext.Orders.Add(order);
                 appDbContext.SaveChanges();
             }
             catch (Exception ex)
