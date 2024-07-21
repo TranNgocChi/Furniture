@@ -7,9 +7,6 @@
     var currentCartItemsJson = JsonConvert.SerializeObject(Model.CurrentCartItems);
     var currentCartJson = JsonConvert.SerializeObject(Model.CurrentCart);
 }
-<script>
-    var products = [];
-</script>
 <div class="untree_co-section before-footer-section">
     <div class="container">
         <form class="row mb-5" method="post">
@@ -35,6 +32,7 @@
                                 foreach (var cartItem in Model.CurrentCartItems)
                                 {
                                     <tr class="cart-item-row">
+                                        <input class="product-input" type="hidden" value="@(JsonConvert.SerializeObject(cartItem.Product))" />
                                         <td class="product-thumbnail">
                                             <a asp-page="/Shop/ProductDetail" asp-route-productId="@cartItem.Product.Id" asp-route-headerJson="@headerJson">
                                                 @if ((cartItem.Product.ProductImage ?? "").Contains("http"))
@@ -69,9 +67,6 @@
                                         <td class="total-money">@(cartItem.Quantity * cartItem.Product.ProductPrice) </td>
                                         <td><a class="btn btn-black btn-sm btn-remove">X</a></td>
                                     </tr>
-                                    <script>
-                                        products = [...products, '@(JsonConvert.SerializeObject(cartItem.Product))'];
-                                    </script>
                                 }
                             }
                         </tbody>
@@ -155,19 +150,21 @@
             var totalMoney = (price * amount).toFixed(2);
             $(row).find('.total-money').text(totalMoney);
 
-            // disable increase button if reach quantity in stock 
+            // disable increase button if reach quantity in stock
             var currentStock = parseInt($(row).find('.current-stock').text().substring(15));
             var increaseBtn = $(row).find('.increase');
-            if (amount == currentStock) {
-                increaseBtn.prop("disabled", true);
-            } 
-            else if (amount > currentStock){
+            if (amount > currentStock) {
                 increaseBtn.prop("disabled", true);
                 $('#cart-error-message').removeClass('d-none');
                 $('#cart-error-message').addClass('d-block');
             }
-            else if (increaseBtn.prop("disabled") || decreaseBtn.prop("disabled")) {
-                increaseBtn.prop("disabled", false);
+            else {
+                if (amount == currentStock) {
+                    increaseBtn.prop("disabled", true);
+                }
+                else {
+                    increaseBtn.prop("disabled", false);
+                }
                 $('#cart-error-message').removeClass('d-block');
                 $('#cart-error-message').addClass('d-none');
             }
@@ -187,11 +184,19 @@
                 $(this).val('')
                 $('#cart-error-message').removeClass('d-none');
                 $('#cart-error-message').addClass('d-block');
-            } 
-            else 
+            }
+            else
             {
                 $('#cart-error-message').removeClass('d-block');
                 $('#cart-error-message').addClass('d-none');
+            }
+        });
+        $('.quantity-amount').on('keydown', function (event) {
+            if (event.key == 'Enter') {
+                event.preventDefault();
+                if ($(this).val() > 0) {
+                    $('.update-cart-btn').click();
+                }
             }
         });
         // event when modify product quantity
@@ -213,6 +218,12 @@
 
         // event when update cart
         $('.update-cart-btn').click(function () {
+            var products = [];
+            $('.product-input').each((idx, product) => {
+                console.log($(product).val());
+                products.push($(product).val());
+            }); 
+            console.log(products);
             var cartTotal = parseFloat($('.total-cart-money').text().substring(1));
             var userName = '@((ViewData["Header"] as _HeaderModel.HeaderModel)?.UserName)';
             var quantityList = [...$('.quantity-amount')];

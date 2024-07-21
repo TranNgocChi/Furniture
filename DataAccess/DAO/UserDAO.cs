@@ -99,7 +99,7 @@ public class UserDAO
             throw new Exception(ex.Message);
         }
     }
-
+    
     public void Delete(User user)
     {
         try
