@@ -34,9 +34,6 @@
 				<li class="nav-item @(Model.CurrentTab == "contact" ? "active":"")">
 					<a class="nav-link" href="/Contact">Contact us</a>
 				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="ProfileUser">Profile</a>
-				</li>
 			</ul>
 
 			<ul class="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
@@ -54,7 +51,7 @@
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 								<li><a class="dropdown-item" asp-page="/Order"><i class="fa-solid fa-bag-shopping"></i> View Orders</a></li>
-								<li><a class="dropdown-item" href="#"><i class="fa-solid fa-address-card"></i> View Profile</a></li>
+								<li><a class="dropdown-item" asp-page="/ProfileUser"><i class="fa-solid fa-address-card"></i> View Profile</a></li>
 								<li><a class="dropdown-item" asp-page="/Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
 							</ul>
 						</div>

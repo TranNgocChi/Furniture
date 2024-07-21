@@ -1,33 +1,29 @@
 using DataAccess.Repository.IRepository;
+using FurnitureApp.Helpers;
 using FurnitureApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 
 namespace FurnitureApp.Pages
 {
-    public class ProfileUserModel : PageModel
+    public class ProfileUserModel(ISessionHelper _sessionHelper,
+        IUserRepository _userRepository) : PageModel
     {
-        private readonly IUserRepository _userRepository;
-        public ProfileUserModel(IUserRepository userRepository)
-        {
-            _userRepository = userRepository;
-        }
         public async Task<IActionResult> OnGetAsync()
         {
             string sessionId = Request.Cookies["userId"];
-            
+
             if (sessionId == "")
             {
                 return NotFound();
             }
 
-            ProfileUser =  _userRepository.GetById(sessionId);
-            if(ProfileUser == null)
+            ProfileUser = _userRepository.GetById(sessionId);
+            if (ProfileUser == null)
             {
                 return NotFound();
             }
-            
+            ViewData["Header"] = await _sessionHelper.GetSessionAsync(Request);
             return Page();
         }
         [BindProperty]
@@ -37,7 +33,7 @@ namespace FurnitureApp.Pages
         public async Task<IActionResult> OnPostAsync()
         {
             string sessionId = Request.Cookies["userId"];
-            string oldImagePath="";
+            string oldImagePath = "";
             if (sessionId != "")
             {
                 User oldUser = _userRepository.GetById(sessionId);
@@ -75,12 +71,11 @@ namespace FurnitureApp.Pages
             {
                 return NotFound();
             }
-             _userRepository.Update(ProfileUser);
-           
+            _userRepository.Update(ProfileUser);
 
             return await OnGetAsync();
         }
     }
 
-   
+
 }

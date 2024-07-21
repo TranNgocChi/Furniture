@@ -22,7 +22,7 @@ public partial class VnMapContext : DbContext
 	public virtual DbSet<Ward> Wards { get; set; }
 
 	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-		=> optionsBuilder.UseSqlServer("Data Source=VNHNDELROYVM;Database=FurnitureShop;User Id=sa;Password=Brightsun2003*;TrustServerCertificate=true;Trusted_Connection=SSPI;Encrypt=false;");
+		=> optionsBuilder.UseSqlServer("Data Source=BIGBOSS;Database=FurnitureShop;User Id=sa;Password=123456789;TrustServerCertificate=true;Trusted_Connection=SSPI;Encrypt=false;");
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
