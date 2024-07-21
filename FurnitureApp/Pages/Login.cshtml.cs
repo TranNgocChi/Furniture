@@ -72,7 +72,16 @@ public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> l
 
         var emailUser = user.FindFirst(ClaimTypes.Email)?.Value;
         var nameUser = user.FindFirst(ClaimTypes.Name)?.Value;
+        string idUser = "";
 
+        if (emailUser != null)
+        {
+            User u = _userRepository.GetByEmail(emailUser);
+            if (u != null)
+            {
+                idUser = u.Id;
+            }
+        }
         // Create user in database
         if (emailUser == null || nameUser == null)
         {
@@ -124,6 +133,7 @@ public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> l
             SameSite = SameSiteMode.Strict
         };
         Response.Cookies.Append("sessionId", sessionId, cookieOptions);
+        Response.Cookies.Append("userId", idUser, cookieOptions);
 
         return RedirectToPage("Index", "Home");
     }
