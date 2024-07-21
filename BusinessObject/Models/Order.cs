@@ -17,7 +17,7 @@ namespace FurnitureApp.Models
         public required Address OrderAddress { get; set; }
 
         [Required]
-        public required User UserOrder { get; set; }
+        public required User? UserOrder { get; set; }
 
         [Required]
         public string? PaymentMethod { get; set; }

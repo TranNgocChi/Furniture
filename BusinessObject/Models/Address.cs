@@ -5,7 +5,7 @@ namespace FurnitureApp.Models
 	public class Address
 	{
 		[Key]
-		public Guid Id { get; set; }
+		public Guid Id { get; set; } = Guid.NewGuid();
 		public string? Country { get; set; }
 		public string? City { get; set; }
 		public string? District { get; set; }

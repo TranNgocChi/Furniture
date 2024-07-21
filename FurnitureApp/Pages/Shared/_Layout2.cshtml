@@ -1,4 +1,13 @@
-﻿
+﻿@{
+	var Header = ViewData["Header"] as _HeaderModel.HeaderModel;
+	var HeaderNull = new _HeaderModel.HeaderModel();
+	if (Header is not null) Header.CurrentTab = ViewData["CurrentTab"] + "";
+	else
+	{
+		HeaderNull.CurrentTab = ViewData["CurrentTab"] + "";
+
+	}
+}
 <!doctype html>
 <html lang="en">
 <head>
@@ -19,8 +28,18 @@
 	<title>Admin</title>
 </head>
 <body>
+	@if (Header != null && !String.IsNullOrEmpty(Header.UserName))
+	{
+		<partial name="_Header" model="Header" />
+	}
+	else
+	{
+		<partial name="_Header" model="HeaderNull" />
+	}
+
 	@RenderBody()
 
+	<partial name="_Footer" />
 </body>
 @RenderSection("Scripts", required: false)
 

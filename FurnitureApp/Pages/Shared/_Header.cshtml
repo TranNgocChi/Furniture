@@ -50,7 +50,7 @@
 								@Model.UserName.Substring(0, Math.Min(Model.UserName.Length, 7))
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="#"><i class="fa-solid fa-bag-shopping"></i> View Orders</a></li>
+								<li><a class="dropdown-item" asp-page="/Order"><i class="fa-solid fa-bag-shopping"></i> View Orders</a></li>
 								<li><a class="dropdown-item" href="#"><i class="fa-solid fa-address-card"></i> View Profile</a></li>
 								<li><a class="dropdown-item" asp-page="/Logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
 							</ul>

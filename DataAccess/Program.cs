@@ -1,8 +1,10 @@
-﻿class Program
+﻿using FurnitureApp;
+
+class Program
 {
 
     static void Main(string[] args)
     {
-
-    }
+        
+	}
 }
