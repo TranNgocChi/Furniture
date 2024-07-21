@@ -99,25 +99,7 @@ public class UserDAO
             throw new Exception(ex.Message);
         }
     }
-    public void UpdateProfile(string id, string userName, string phone, string image)
-    {
-        try
-        {
-            using AppDbContext appDbContext = new();
-            User u = GetById(id);
-            if (u != null) { 
-               u.UserName = userName;
-                u.PhoneNumber = phone;
-
-                Update(u);
-            }
-            
-        }
-        catch (Exception ex)
-        {
-            throw new Exception(ex.Message);
-        }
-    }
+    
     public void Delete(User user)
     {
         try
