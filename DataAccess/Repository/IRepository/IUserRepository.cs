@@ -16,5 +16,6 @@ namespace DataAccess.Repository.IRepository
 		public void Update(User user);
 		public void Delete(User user);
 		public void DeleteAll();
-	}
+        
+    }
 }

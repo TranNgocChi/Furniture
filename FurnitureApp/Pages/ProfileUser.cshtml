@@ -1,0 +1,74 @@
+﻿@page
+@model FurnitureApp.Pages.ProfileUserModel
+@{
+}
+ 
+         <div class="header">
+                <div class="header-main"  style="padding-top: 5px; margin-left:30%;">
+                    <h1 style="padding-bottom: 5px;"></h1>
+
+                    
+
+                    <div class="header-bottom">
+                        <div class="header-right w3agile">
+                            <div class="FormView"  style=" margin-top:20px; " >
+                                <form  method="post" enctype="multipart/form-data" style="margin-left:20%;">
+                                    <div class="avatar-container"  style="margin-left:50px;">
+            <input type="file" id="avatar" asp-for="Avatar" class="form-control-file"  style="display: none;">
+            <img id="avatar-preview" src="@(Model.ProfileUser.UserImage ??"https://s3v2.interdata.vn:9000/s3-586-15343-storage/dienthoaigiakho/wp-content/uploads/2024/01/31133958/avatar-nam-nu-trang-2.jpg")" alt="Ảnh đại diện" class="avatar-preview" onclick="document.getElementById('avatar').click()">
+        </div>
+                                   
+                                     <div class="form-group">
+                <input type="hidden" asp-for="ProfileUser.Id" class="form-control" />
+            </div>
+                                   <div class="form-group">
+                <label asp-for="ProfileUser.UserName" class="control-label"></label>
+                <input asp-for="ProfileUser.UserName" class="form-control" style="width:30%;"/>
+                <span asp-validation-for="ProfileUser.UserName" class="text-danger"></span>
+            </div>
+                                   <div class="form-group">
+                <label asp-for="ProfileUser.Email" class="control-label"></label>
+                <input asp-for="ProfileUser.Email" class="form-control" style="width:30%;" readonly />
+                <span asp-validation-for="ProfileUser.Email" class="text-danger"></span>
+            </div> 
+                                          
+                                           
+                                    <div class="form-group">
+                <label asp-for="ProfileUser.PhoneNumber" class="control-label"></label>
+                <input asp-for="ProfileUser.PhoneNumber" class="form-control" style="width:30%;"/>
+                <span asp-validation-for="ProfileUser.PhoneNumber" class="text-danger"></span>
+            </div>
+                                    <div class="submit"  style="margin-left:100px; margin-top:20px; ">
+                                        <input  type="submit" value="Update" />
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    <script>
+    document.getElementById('avatar').addEventListener('change', function() {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('avatar-preview').src = e.target.result;
+        }
+        reader.readAsDataURL(this.files[0]);
+    });
+</script>
+
+<style>
+    .avatar-container {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+    .avatar-preview {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>
