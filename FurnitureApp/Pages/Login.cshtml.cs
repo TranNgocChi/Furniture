@@ -134,5 +134,4 @@ public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> l
 
         return RedirectToPage("Index", "Home");
     }
-
 }
