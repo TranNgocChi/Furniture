@@ -1,10 +1,13 @@
+using BusinessObject.Models;
 using DataAccess.DAO;
 using DataAccess.Repository.CRepository;
 using DataAccess.Repository.IRepository;
+using FurnitureApp.ExternalServices.VnPayService;
 using FurnitureApp.Helpers;
 using FurnitureApp.Models;
 using FurnitureApp.Models.Admin;
 using FurnitureApp.Models.VNMaps;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static FurnitureApp.Pages.Shared._HeaderModel;
@@ -13,7 +16,8 @@ namespace FurnitureApp.Pages;
 
 public class CheckoutModel(ISessionHelper _sessionHelper, IUserRepository _userRepository, 
 	ICartRepository _cartRepository, ICartItemRepository _cartItemRepository,
-	IOrderRepository _orderRepository, IStatusRepository _statusRepository) : PageModel
+	IOrderRepository _orderRepository, IStatusRepository _statusRepository,
+    IVnPayService _vnPayService) : PageModel
 {
 	private readonly VnMapContext _vnMapContext = new();
 	public ShopAddress? ShopAddress { get; set; }
@@ -145,11 +149,78 @@ public class CheckoutModel(ISessionHelper _sessionHelper, IUserRepository _userR
 			_cartItemRepository.DeleteAllByCartId(cartId);
 			return Redirect("/OrderStatus/OrderSuccess");
 		}
-		else if (payment_method == "payment_online")
+		else if (payment_method == "payment_vnpay")
 		{
-			return Redirect("/OrderStatus/OrderSuccess");
+            var vnPayModel = new VnPaymentRequestModel
+            {
+                Amount = totalPrice,
+                CreatedDate = DateTime.Now,
+                Description = $"{order.UserOrder.Email}-{c_phone}",
+                FullName = order.UserOrder.UserName,
+                OrderId = order.Id.ToString(),
+            };
+
+            //Create session tmp userId
+            HttpContext.Session.SetString("UserID", User.Id.ToString());
+
+            //Create Order temp if not success -> delete
+            _orderRepository.Create(order);
+
+            //Create session tmp orderId
+            HttpContext.Session.SetString("OrderID", order.Id.ToString());
+
+            return Redirect(_vnPayService.CreatePaymentUrl(HttpContext, vnPayModel));
 		}
 
-		return Redirect("/OrderStatus/OrderFail");
-	}
+        return BadRequest("Invalid payment method!");
+    }
+
+    /// <summary>
+    /// Payment Call Back
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IActionResult> PaymentCallBack()
+    {
+        //Get order from session
+        var orderId = HttpContext.Session.GetString("OrderID");
+        if (orderId == null)
+        {
+            TempData["ErrorMessage"] = "Please Login!";
+            return Redirect("/Login");
+        }
+        var response = _vnPayService.PaymentExecute(Request.Query);
+
+        if (response == null || response.VnPayResponseCode != "00")
+        {
+            //Delete Order in DB if failed
+            _orderRepository.Delete(new Order { Id = Guid.Parse(orderId),
+                OrderAddress=null, UserOrder=null, OrderItems=null });
+
+            TempData["Message"] = $"Erron VnPay Payment: {response.VnPayResponseCode}";
+            return Redirect("/OrderStatus/OrderFail");
+        }
+
+        //Get User id from session
+        var userId = HttpContext.Session.GetString("UserID");
+        if (userId == null)
+        {
+            TempData["ErrorMessage"] = "Please Login!";
+            return Redirect("/Login");
+        }
+
+        string cartId = Cart.Id.ToString();
+        if (cartId == null)
+        {
+            return Redirect("/");
+        }
+        Cart.CartTotal = 0;
+        _cartRepository.Update(Cart);
+        _cartItemRepository.DeleteAllByCartId(cartId);
+
+        //Delete Session tmp
+        HttpContext.Session.Remove("UserID");
+
+        TempData["Message"] = $"Payment VnPay Success!";
+        return Redirect("/OrderStatus/OrderSuccess");
+    }
 }

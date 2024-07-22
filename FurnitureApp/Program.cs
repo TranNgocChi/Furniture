@@ -1,6 +1,7 @@
 ﻿using DataAccess.Repository.CRepository;
 using DataAccess.Repository.IRepository;
 using FurnitureApp;
+using FurnitureApp.ExternalServices.VnPayService;
 using FurnitureApp.Helpers;
 using FurnitureApp.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -16,6 +17,14 @@ builder.Services.AddRazorPages()
     {
         o.Conventions.AddPageRoute("/Admin/Login", "/Admin");
     }); ;
+
+builder.Services.AddDistributedMemoryCache(); // Được sử dụng để lưu trữ session trong bộ nhớ
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Thời gian hết hạn của session
+    options.Cookie.HttpOnly = true; // Cookie chỉ được truy cập bởi server
+    options.Cookie.IsEssential = true; // Cần thiết để lưu trữ session
+});
 
 // Inject Db Context
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -33,10 +42,14 @@ builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddSingleton<ISessionHelper, SessionHelper>();
+
 // Đăng ký dịch vụ Identity
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
+
+// Register VnPay Service
+builder.Services.AddSingleton<IVnPayService, VnPayService>();
 
 // Inject Google and Facebook services
 builder.Services.AddAuthentication(options =>
@@ -76,7 +89,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 app.UseAuthentication();
-
+app.UseSession();
 app.MapRazorPages();
 
 app.MapHub<SignalRServer>("/signalRServer");

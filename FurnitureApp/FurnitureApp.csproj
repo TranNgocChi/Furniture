@@ -12,6 +12,19 @@
 
   </PropertyGroup>
 
+
+
+  <ItemGroup>
+    <Compile Remove="Binders\**" />
+    <Compile Remove="Validation\**" />
+    <Content Remove="Binders\**" />
+    <Content Remove="Validation\**" />
+    <EmbeddedResource Remove="Binders\**" />
+    <EmbeddedResource Remove="Validation\**" />
+    <None Remove="Binders\**" />
+    <None Remove="Validation\**" />
+  </ItemGroup>
+
   <ItemGroup>
     <None Remove="Pages\Shared\_Layout2.cshtml.css" />
   </ItemGroup>
@@ -21,9 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Binders\" />
     <Folder Include="Pages\Admin\Users\" />
-    <Folder Include="Validation\" />
   </ItemGroup>
 
 
@@ -31,6 +42,7 @@
   <ItemGroup>
     <PackageReference Include="FirebaseAdmin" Version="3.0.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
