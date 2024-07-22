@@ -36,6 +36,21 @@
                     <li class="nav-item">
                         <a class="nav-link @(ViewData["CurrentTab"] == "status" ? "active":"")" asp-page="/Admin/Statuses/Index"> Statuses </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewData["CurrentTab"] == "orders" ? "active":"")" asp-page="/Admin/OrderUsers/Index"> Orders </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewData["CurrentTab"] == "address" ? "active":"")" asp-page="/Admin/Addresses/Index"> Addresses </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewData["CurrentTab"] == "orderitems" ? "active":"")" asp-page="/Admin/OrderItems/Index"> OrderItems </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewData["CurrentTab"] == "carts" ? "active":"")" asp-page="/Admin/Carts/Index"> Carts </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewData["CurrentTab"] == "cartitems" ? "active":"")" asp-page="/Admin/CartItems/Index"> CartItems </a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -45,6 +60,7 @@
             @RenderBody()
         </div>
     </div>
+
     <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/tiny-slider.js"></script>
     <script src="~/js/custom.js"></script>
