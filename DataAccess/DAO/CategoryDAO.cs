@@ -1,128 +1,122 @@
-﻿using FurnitureApp.Models;
-using FurnitureApp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FurnitureApp;
+using FurnitureApp.Models;
 
-namespace DataAccess.DAO
+namespace DataAccess.DAO;
+
+public class CategoryDAO
 {
-	public class CategoryDAO
-	{
-        //Using Singleton Design Pattern
-        private static CategoryDAO instance = new();
-        private static readonly object instanceLock = new();
-        private CategoryDAO() { }
-        public static CategoryDAO Instance
+    //Using Singleton Design Pattern
+    private static CategoryDAO instance = new();
+    private static readonly object instanceLock = new();
+    private CategoryDAO() { }
+    public static CategoryDAO Instance
+    {
+        get
         {
-            get
+            lock (instanceLock)
             {
-                lock (instanceLock)
-                {
-                    instance ??= new CategoryDAO();
-                }
-                return instance;
+                instance ??= new CategoryDAO();
             }
+            return instance;
         }
+    }
 
-        public List<Category> GetAll()
+    public List<Category> GetAll()
+    {
+        List<Category> listCategory = [];
+        try
         {
-            List<Category> listCategory = [];
-            try
-            {
-                using AppDbContext appDbContext = new();
-                listCategory = [.. appDbContext.Categories];
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return listCategory;
+            using AppDbContext appDbContext = new();
+            listCategory = [.. appDbContext.Categories];
         }
-
-        public Category? GetById(string id)
+        catch (Exception ex)
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                var categoryFound = appDbContext.Categories.FirstOrDefault(c => c.Id.ToString() == id);
-                if (categoryFound != null)
-                {
-                    return categoryFound;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new Exception(ex.Message);
         }
+        return listCategory;
+    }
 
-        public void Create(Category category)
+    public Category? GetById(string id)
+    {
+        try
         {
-            try
+            using AppDbContext appDbContext = new();
+            var categoryFound = appDbContext.Categories.FirstOrDefault(c => c.Id.ToString() == id);
+            if (categoryFound != null)
             {
-                using AppDbContext appDbContext = new();
-                appDbContext.Categories.Add(category);
-                appDbContext.SaveChanges();
+                return categoryFound;
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            return null;
         }
-
-        public void Update(Category category)
+        catch (Exception ex)
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                appDbContext.Entry<Category>(category).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                appDbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        public void Delete(Category category)
+    public void Create(Category category)
+    {
+        try
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-
-                //Delete product
-                var productsByCategory = appDbContext.Products.Where(p => p.Category.Id == category.Id).ToList();
-                appDbContext.Products.RemoveRange(productsByCategory);
-
-                //Delete Category
-                appDbContext.Categories.Remove(category);
-
-                appDbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            using AppDbContext appDbContext = new();
+            appDbContext.Categories.Add(category);
+            appDbContext.SaveChanges();
         }
-
-        public void DeleteAll()
+        catch (Exception ex)
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                appDbContext.Categories.RemoveRange(GetAll());
-                appDbContext.SaveChanges();
+            throw new Exception(ex.Message);
+        }
+    }
 
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+    public void Update(Category category)
+    {
+        try
+        {
+            using AppDbContext appDbContext = new();
+            appDbContext.Entry<Category>(category).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            appDbContext.SaveChanges();
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public void Delete(Category category)
+    {
+        try
+        {
+            using AppDbContext appDbContext = new();
+
+            //Delete product
+            var productsByCategory = appDbContext.Products.Where(p => p.Category.Id == category.Id).ToList();
+            appDbContext.Products.RemoveRange(productsByCategory);
+
+            //Delete Category
+            appDbContext.Categories.Remove(category);
+
+            appDbContext.SaveChanges();
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public void DeleteAll()
+    {
+        try
+        {
+            using AppDbContext appDbContext = new();
+            appDbContext.Categories.RemoveRange(GetAll());
+            appDbContext.SaveChanges();
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
         }
     }
 }

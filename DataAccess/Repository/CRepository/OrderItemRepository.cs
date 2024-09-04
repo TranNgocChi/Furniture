@@ -2,10 +2,9 @@
 using DataAccess.Repository.IRepository;
 using FurnitureApp.Models;
 
-namespace DataAccess.Repository.CRepository
+namespace DataAccess.Repository.CRepository;
+
+public class OrderItemRepository : IOrderItemRepository
 {
-	public class OrderItemRepository : IOrderItemRepository
-	{
-		public void Create(OrderItem orderItem) => OrderItemDAO.Instance.Create(orderItem);
-	}
+	public void Create(OrderItem orderItem) => OrderItemDAO.Instance.Create(orderItem);
 }

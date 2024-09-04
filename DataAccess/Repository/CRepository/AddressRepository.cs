@@ -1,13 +1,7 @@
 ﻿using DataAccess.Repository.IRepository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace DataAccess.Repository.CRepository
+namespace DataAccess.Repository.CRepository;
+
+public class AddressRepository : IAddressRepository
 {
-	public class AddressRepository : IAddressRepository
-	{
-	}
 }

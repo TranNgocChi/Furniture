@@ -1,10 +1,9 @@
 ﻿using BusinessObject.Models;
 
-namespace FurnitureApp.ExternalServices.VnPayService
+namespace FurnitureApp.ExternalServices.VnPayService;
+
+public interface IVnPayService
 {
-    public interface IVnPayService
-    {
-        string CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model);
-        VnPaymentResponseModel PaymentExecute(IQueryCollection collections);
-    }
+    string CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model);
+    VnPaymentResponseModel PaymentExecute(IQueryCollection collections);
 }

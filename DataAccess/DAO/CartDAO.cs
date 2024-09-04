@@ -2,157 +2,156 @@
 using FurnitureApp.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccess.DAO
+namespace DataAccess.DAO;
+
+public class CartDAO
 {
-    public class CartDAO
+    //Using Singleton Design Pattern
+    private static CartDAO instance = new();
+    private static readonly object instanceLock = new();
+    private CartDAO() { }
+    public static CartDAO Instance
     {
-        //Using Singleton Design Pattern
-        private static CartDAO instance = new();
-        private static readonly object instanceLock = new();
-        private CartDAO() { }
-        public static CartDAO Instance
+        get
         {
-            get
+            lock (instanceLock)
             {
-                lock (instanceLock)
-                {
-                    instance ??= new CartDAO();
-                }
-                return instance;
+                instance ??= new CartDAO();
             }
+            return instance;
         }
+    }
 
-        public List<Cart> GetAll()
+    public List<Cart> GetAll()
+    {
+        List<Cart> listCart = [];
+        try
         {
-            List<Cart> listCart = [];
-            try
-            {
-                using AppDbContext appDbContext = new();
-                listCart = [.. appDbContext.Carts.Include(cart => cart.UserCart)];
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return listCart;
+            using AppDbContext appDbContext = new();
+            listCart = [.. appDbContext.Carts.Include(cart => cart.UserCart)];
         }
-
-        public Cart? GetById(string id)
+        catch (Exception ex)
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                var cartFound = appDbContext.Carts
-                    .Include(cart => cart.UserCart)
-                    .FirstOrDefault(c => c.Id.ToString() == id);
-                if (cartFound != null)
-                {
-                    return cartFound;
-                }
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new Exception(ex.Message);
         }
+        return listCart;
+    }
 
-        public List<Cart> GetByUserId(string userId)
+    public Cart? GetById(string id)
+    {
+        try
         {
-            List<Cart> cartsFound = [];
-            try
+            using AppDbContext appDbContext = new();
+            var cartFound = appDbContext.Carts
+                .Include(cart => cart.UserCart)
+                .FirstOrDefault(c => c.Id.ToString() == id);
+            if (cartFound != null)
             {
-                using AppDbContext appDbContext = new();
-                cartsFound = [..appDbContext.Carts
-                    .Include(cart => cart.UserCart)
-                    .Where(c => c.UserCart.Id.ToString() == userId)];
+                return cartFound;
             }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            return cartsFound;
+            return null;
         }
-
-        public void Create(Cart cart)
+        catch (Exception ex)
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                cart = TrackCart(cart, appDbContext);
-                appDbContext.Carts.Add(cart);
-                appDbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new Exception(ex.Message);
         }
+    }
 
-        public void Update(Cart cart)
+    public List<Cart> GetByUserId(string userId)
+    {
+        List<Cart> cartsFound = [];
+        try
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                cart = TrackCart(cart, appDbContext);
-                appDbContext.Entry<Cart>(cart).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-                appDbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            using AppDbContext appDbContext = new();
+            cartsFound = [..appDbContext.Carts
+                .Include(cart => cart.UserCart)
+                .Where(c => c.UserCart.Id.ToString() == userId)];
         }
-
-        public void Delete(Cart cart)
+        catch (Exception ex)
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                cart = TrackCart(cart, appDbContext);
-                appDbContext.Carts.Remove(cart);
-                appDbContext.SaveChanges();
-
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            throw new Exception(ex.Message);
         }
+        return cartsFound;
+    }
 
-        public void DeleteAll()
+    public void Create(Cart cart)
+    {
+        try
         {
-            try
-            {
-                using AppDbContext appDbContext = new();
-                appDbContext.Carts.RemoveRange(GetAll());
-                appDbContext.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            using AppDbContext appDbContext = new();
+            cart = TrackCart(cart, appDbContext);
+            appDbContext.Carts.Add(cart);
+            appDbContext.SaveChanges();
         }
-
-        private Cart TrackCart(Cart cart, AppDbContext appDbContext)
+        catch (Exception ex)
         {
-            try
-            {
-                appDbContext.Entry(cart.UserCart).State = EntityState.Detached;
+            throw new Exception(ex.Message);
+        }
+    }
 
-                var currentUser = appDbContext.Users.FirstOrDefault(u => u.Id == cart.UserCart.Id);
-                if (currentUser is not null)
-                {
-                    cart.UserCart = currentUser;
-                }
-                return cart;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+    public void Update(Cart cart)
+    {
+        try
+        {
+            using AppDbContext appDbContext = new();
+            cart = TrackCart(cart, appDbContext);
+            appDbContext.Entry<Cart>(cart).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            appDbContext.SaveChanges();
 
         }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public void Delete(Cart cart)
+    {
+        try
+        {
+            using AppDbContext appDbContext = new();
+            cart = TrackCart(cart, appDbContext);
+            appDbContext.Carts.Remove(cart);
+            appDbContext.SaveChanges();
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    public void DeleteAll()
+    {
+        try
+        {
+            using AppDbContext appDbContext = new();
+            appDbContext.Carts.RemoveRange(GetAll());
+            appDbContext.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+    }
+
+    private Cart TrackCart(Cart cart, AppDbContext appDbContext)
+    {
+        try
+        {
+            appDbContext.Entry(cart.UserCart).State = EntityState.Detached;
+
+            var currentUser = appDbContext.Users.FirstOrDefault(u => u.Id == cart.UserCart.Id);
+            if (currentUser is not null)
+            {
+                cart.UserCart = currentUser;
+            }
+            return cart;
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message);
+        }
+
     }
 }
